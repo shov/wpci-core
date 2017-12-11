@@ -9,8 +9,8 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Wpci\Core\Facades\Path;
 use Wpci\Core\Facades\ShutdownPromisePool;
+use Wpci\Core\Helpers\Path;
 use Wpci\Core\Helpers\PromisePool;
 use Wpci\Core\Helpers\Singleton;
 use Wpci\Core\Http\WpFrontController;
@@ -29,6 +29,9 @@ final class App
     /** @var ContainerBuilder */
     protected $container;
 
+    /** @var Path */
+    protected $path;
+
     /** @var array */
     protected $env = [];
 
@@ -42,18 +45,19 @@ final class App
         /**
          * Logs
          */
+        $this->path = new Path(self::PROJECT_ROOT);
 
         /** @var Logger $logger */
         $logger = new Logger('general');
 
-        $debugLog = Path::getProjectRoot('/debug.log.html');
+        $debugLog = $this->path->getProjectRoot('/debug.log.html');
         file_put_contents($debugLog, ''); //Cleaning TODO: move to config
 
         $debugHandler = new StreamHandler($debugLog, $logger::DEBUG);
         $debugHandler->setFormatter(new HtmlFormatter());
         $logger->pushHandler($debugHandler);
 
-        $errorLog = Path::getProjectRoot('/error.log.html');
+        $errorLog = $this->path->getProjectRoot('/error.log.html');
         file_put_contents($errorLog, ''); //Cleaning TODO: move to config
 
         $errorHandler = new StreamHandler($errorLog, $logger::ERROR);
@@ -62,7 +66,7 @@ final class App
 
         $this->container->set('Logger', $logger);
 
-        ini_set('error_log', Path::getProjectRoot('/error.log.wp.txt'));
+        ini_set('error_log', $this->path->getProjectRoot('/error.log.wp.txt'));
 
         /**
          * Wordpress
@@ -83,7 +87,7 @@ final class App
         /**
          * Config
          */
-        $serviceConfigLoader = new YamlFileLoader($this->container, new FileLocator(Path::getConfigPath()));
+        $serviceConfigLoader = new YamlFileLoader($this->container, new FileLocator($this->path->getConfigPath()));
         $serviceConfigLoader->load('services.yaml');
 
         $this->container->set('promise-pool.shutdown', new PromisePool());

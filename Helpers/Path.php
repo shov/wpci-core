@@ -10,20 +10,41 @@ use WP;
  */
 class Path
 {
+    static protected $root;
+
+    /**
+     * Path constructor.
+     * @param string $root
+     * @throws \Exception
+     */
+    public function __construct(string $root)
+    {
+        if(empty($root) || !is_dir($root)) {
+            throw new \Exception("Invalid root dir");
+        }
+        static::$root = $root;
+    }
+
     /**
      * Get absolute project directory path
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getProjectRoot(string $tail = ''): string
     {
-        return realpath(App::PROJECT_ROOT) . $tail;
+        if(empty(static::$root) || !is_dir(static::$root)) {
+            throw new \Exception("Invalid root dir or not set yet!");
+        }
+
+        return realpath(static::$root) . $tail;
     }
 
     /**
      * Get absolute path to config folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getConfigPath(string $tail = ''): string
     {
@@ -34,6 +55,7 @@ class Path
      * Get absolute path to wordpress folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getWpPath(string $tail = ''): string
     {
@@ -44,6 +66,7 @@ class Path
      * Get absolute path to Core folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getCorePath(string $tail = ''): string
     {
@@ -54,6 +77,7 @@ class Path
      * Get absolute path to Application folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getAppPath(string $tail = ''): string
     {
@@ -64,6 +88,7 @@ class Path
      * Get absolute path to Application templates folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getTplPath(string $tail = ''): string
     {
@@ -74,6 +99,7 @@ class Path
      * Get absolute path to source folder
      * @param string $tail
      * @return string
+     * @throws \Exception
      */
     public function getSrcPath(string $tail = ''): string
     {
