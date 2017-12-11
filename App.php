@@ -36,7 +36,7 @@ final class App
      * @param string $rootPath
      * @throws \Exception
      */
-    private function __construct(string $rootPath)
+    public function __construct(string $rootPath)
     {
         $this->container = new ContainerBuilder();
 
