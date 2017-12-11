@@ -10,19 +10,32 @@ use WP;
  */
 class Path
 {
+    /**
+     * @var string
+     */
     protected $root;
+
+    /**
+     * @var string
+     */
+    protected $core;
 
     /**
      * Path constructor.
      * @param string $root
      * @throws \Exception
      */
-    public function __construct(string $root)
+    public function __construct(string $root, string $core)
     {
         if(empty($root) || !is_dir($root)) {
             throw new \Exception("Invalid root dir");
         }
         $this->root = $root;
+
+        if(empty($core) || !is_dir($core)) {
+            throw new \Exception("Invalid core dir");
+        }
+        $this->core = $core;
     }
 
     /**
@@ -70,7 +83,7 @@ class Path
      */
     public function getCorePath(string $tail = ''): string
     {
-        return $this->getProjectRoot() . '/core' . $tail;
+        return $this->core;
     }
 
     /**

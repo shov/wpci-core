@@ -3,6 +3,7 @@
 namespace Wpci\Core\Helpers;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Trait ServiceRegistrator
@@ -10,33 +11,48 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * required in implementation
  * @property ContainerBuilder $container
+ * @property Path $path
  */
 trait ServiceRegistrator
 {
     /**
      * @var array
      */
-    protected $serviceArguments= [];
+    protected $serviceArguments = [];
+
+    /**
+     * @var array
+     */
+    protected $excluded = [];
 
     /**
      * Add arguments to entity before register it
      * @param string $id
-     * @param array ...$arguments
+     * @param Reference[] ...$arguments
      */
-    protected function prepareArguments(string $id, ...$arguments)
+    protected function prepareArguments(string $id, Reference ...$arguments)
     {
-        $this->serviceArguments[$id] = is_array($this->serviceArguments[$id])
-            ? array_merge($this->serviceArguments[$id], $arguments)
-            : $arguments;
+        if(!isset($this->serviceArguments[$id])) $this->serviceArguments[$id] = [];
+        $this->serviceArguments[$id] = array_merge($this->serviceArguments[$id], $arguments);
+    }
+
+    /**
+     * Count names of classes which should be excluded
+     * @param string[] ...$ids
+     */
+    protected function exclude(string ...$ids)
+    {
+        $this->excluded = array_merge($this->excluded, $ids);
     }
 
     /**
      * Register all entities (only classes) from directory
      * @param string $dirInCore
+     * @throws \Exception
      */
     protected function walkDirForServices(string $dirInCore) {
         $entities = [];
-        $entitiesPath = __DIR__ . '/' . ($dirInCore);
+        $entitiesPath = $this->path->getCorePath() . '/' . ($dirInCore);
 
         $entitiesDir = new \DirectoryIterator($entitiesPath);
         foreach ($entitiesDir as $fileInfo) {
@@ -61,6 +77,11 @@ trait ServiceRegistrator
 
         foreach ($entities as $entity) {
             $className = "Wpci\\Core\\" . $dirInCore . "\\" . $entity;
+
+            if(in_array($className, $this->excluded)) {
+                continue;
+            }
+
             $bound = $this->container->register($className);
 
             if(!empty($this->serviceArguments[$className])) {
@@ -68,6 +89,8 @@ trait ServiceRegistrator
                     $bound = $bound->addArgument($argument);
                 }
             }
+
+            $bound->setPublic(true);
         }
     }
 }

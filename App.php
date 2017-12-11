@@ -8,11 +8,15 @@ use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Wpci\Core\Facades\RouterStore;
 use Wpci\Core\Facades\ShutdownPromisePool;
 use Wpci\Core\Helpers\Path;
 use Wpci\Core\Helpers\PromisePool;
 use Wpci\Core\Helpers\ServiceRegistrator;
 use Wpci\Core\Http\WpFrontController;
+use Wpci\Core\Http\WpResponse;
+use Wpci\Core\Render\MustacheTemplate;
+use Wpci\Core\Render\View;
 use wpdb;
 
 /**
@@ -44,7 +48,7 @@ final class App
     {
         $this->container = new ContainerBuilder();
 
-        $this->path = new Path($rootPath);
+        $this->path = new Path($rootPath, __DIR__);
 
         ini_set('error_log', $this->path->getProjectRoot('/error.log.wp.txt'));
 
@@ -68,10 +72,12 @@ final class App
         /**
          * Core
          */
-        $this->prepareArguments('Wpci\Core\WpFrontController', new Reference('service_container'));
-        $this->prepareArguments('Wpci\Core\Render\View',
-            new Reference('Wpci\Core\Render\MustacheTemplate'),
-            new Reference('Wpci\Core\Http\WpResponse')
+        $this->exclude(Path::class);
+
+        $this->prepareArguments(WpFrontController::class, new Reference('service_container'));
+        $this->prepareArguments(View::class,
+            new Reference(MustacheTemplate::class),
+            new Reference(WpResponse::class)
         );
 
         $this->walkDirForServices('DataSource');
@@ -85,7 +91,9 @@ final class App
         $serviceConfigLoader = new YamlFileLoader($this->container, new FileLocator($this->path->getConfigPath()));
         $serviceConfigLoader->load('services.yaml');
 
+        $this->container->set(Path::class, $this->path);
         $this->container->set('promise-pool.shutdown', new PromisePool());
+        $this->container->compile();
 
         /**
          * Environment
@@ -100,8 +108,6 @@ final class App
     public function run()
     {
         try {
-            $this->container->compile();
-
             /**
              * TODO: remove dependency
              */
@@ -109,9 +115,7 @@ final class App
                 ShutdownPromisePool::callAllPromises();
             });
 
-            $this->container
-                ->get(WpFrontController::class)
-                ->routing();
+            RouterStore::makeBinding();
 
         } catch (\Throwable $e) {
             if (!is_null($this->logger)) {

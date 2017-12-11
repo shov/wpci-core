@@ -84,7 +84,6 @@ class WpciQuery
             'site-html_type' => get_bloginfo('html_type'),
             'site-version' => get_bloginfo('version'),
             'site-language' => get_bloginfo('language'),
-            'site-text_direction' => get_bloginfo('text_direction'),
             'site-name' => get_bloginfo('name'),
         ];
 

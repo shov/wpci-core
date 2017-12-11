@@ -31,11 +31,12 @@ trait KeyToFile
                 throw new \Exception("Can't create temp file!");
             }
 
-            file_put_contents($tmpFilePath, $originalKey);
+            file_put_contents($tmpFilePath . $ext, $originalKey);
 
             $result = $process($tmpFilePath);
 
             @unlink($tmpFilePath);
+            @unlink($tmpFilePath . $ext);
 
             return $result;
 

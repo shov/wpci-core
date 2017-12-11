@@ -31,7 +31,12 @@ class Action implements ActionInterface
 
         $response = call_user_func($callback, ...$arguments);
 
-        if(!in_array(Response::class, class_implements($response))) {
+        if(!is_object($response)) {
+            return new RegularResponse($response);
+        }
+
+        $responseImplements = class_implements($response);
+        if(false === $responseImplements || !in_array(Response::class, $responseImplements)) {
             $response = new RegularResponse($response);
         }
         return $response;
