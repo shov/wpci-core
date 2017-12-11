@@ -22,10 +22,6 @@ use wpdb;
  */
 final class App
 {
-    use Singleton;
-
-    const PROJECT_ROOT = __DIR__ . '/../..';
-
     /** @var ContainerBuilder */
     protected $container;
 
@@ -37,15 +33,17 @@ final class App
 
     /**
      * App constructor. Bootstrap
+     * @param string $rootPath
+     * @throws \Exception
      */
-    private function __construct()
+    private function __construct(string $rootPath)
     {
         $this->container = new ContainerBuilder();
 
         /**
          * Logs
          */
-        $this->path = new Path(self::PROJECT_ROOT);
+        $this->path = new Path($rootPath);
 
         /** @var Logger $logger */
         $logger = new Logger('general');

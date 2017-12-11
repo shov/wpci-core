@@ -19,7 +19,7 @@ class ApiController extends Responder
     {
         $exceptionMarker = (2 != intval($status / 100));
 
-        if ($exceptionMarker && App::environment('testing')) {
+        if ($exceptionMarker && App::getEnvVar('testing')) {
 
             $logData = [$content, $status];
             is_null($e) ?: $logData[] = $e->getTraceAsString();

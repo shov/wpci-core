@@ -3,9 +3,16 @@
 namespace Wpci\Core\Facades;
 
 use Symfony\Component\DependencyInjection\Container;
-use Wpci\Core\App as TheApp;
+use Wpci\Core\Helpers\Facade;
 
-class App
+/**
+ * Class App
+ * @package Wpci\Core\Facades
+ *
+ * @method static Container getContainer()
+ * @method static null|mixed getEnvVar(string $var)
+ */
+class App extends Facade
 {
     /**
      * Get entity from container
@@ -15,20 +22,16 @@ class App
      */
     public static function get($id)
     {
-        return TheApp::getInstance()->getContainer()->get($id);
+        return static::getFacadeRoot()->getContainer()->get($id);
     }
 
     /**
-     * Get the container
-     * @return Container
+     * Return the facade root object
+     * @return mixed
      */
-    public static function getContainer(): Container
+    public static function getFacadeRoot()
     {
-        return TheApp::getInstance()->getContainer();
-    }
-
-    public static function environment(string $var)
-    {
-        return TheApp::getInstance()->getEnvVar($var);
+        global $app;
+        return $app;
     }
 }

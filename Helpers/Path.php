@@ -10,7 +10,7 @@ use WP;
  */
 class Path
 {
-    static protected $root;
+    protected $root;
 
     /**
      * Path constructor.
@@ -22,7 +22,7 @@ class Path
         if(empty($root) || !is_dir($root)) {
             throw new \Exception("Invalid root dir");
         }
-        static::$root = $root;
+        $this->root = $root;
     }
 
     /**
@@ -33,11 +33,11 @@ class Path
      */
     public function getProjectRoot(string $tail = ''): string
     {
-        if(empty(static::$root) || !is_dir(static::$root)) {
+        if(empty($this->root) || !is_dir($this->root)) {
             throw new \Exception("Invalid root dir or not set yet!");
         }
 
-        return realpath(static::$root) . $tail;
+        return realpath($this->root) . $tail;
     }
 
     /**

@@ -23,7 +23,7 @@ class PagesController extends Responder
             $content = (string)$content;
         }
 
-        if ($exceptionMarker && App::environment('testing')) {
+        if ($exceptionMarker && App::getEnvVar('testing')) {
 
             $logData = [$content, $status];
             is_null($e) ?: $logData[] = $e->getTraceAsString();
