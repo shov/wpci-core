@@ -24,7 +24,7 @@ final class App
 {
     use Singleton;
 
-    const PROJECT_ROOT = __DIR__ . '/..';
+    const PROJECT_ROOT = __DIR__ . '/../..';
 
     /** @var ContainerBuilder */
     protected $container;
