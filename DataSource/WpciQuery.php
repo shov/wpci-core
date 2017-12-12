@@ -40,6 +40,7 @@ class WpciQuery
      * @param null $query
      * @param null|string $channel
      * @throws \Exception
+     * @throws \Error
      */
     public function __construct($query = null, ?string $channel = null)
     {
@@ -97,13 +98,15 @@ class WpciQuery
      * @param bool $withoutWp
      * @return WpciQuery
      * @throws \Exception
+     * @throws \Error
      */
     public function addPostData(?callable $anotherElse = null, bool $withoutWp = false)
     {
         /**
          * @var WP_Post $post
+         * TODO: resolve dependence
          */
-        $post = Core::get('wp.post');
+        global $post; // = Core::get('wp.post'); don't works
 
         $queryObject = $this->wpQuery();
 
@@ -147,13 +150,15 @@ class WpciQuery
      * @param bool $withoutWp
      * @return WpciQuery
      * @throws \Exception
+     * @throws \Error
      */
     public function addPostLoopData(?callable $anotherElse = null, bool $withoutWp = false)
     {
         /**
          * @var WP_Post $post
+         * TODO: resolve dependence
          */
-        $post = Core::get('wp.post');
+        global $post; // = Core::get('wp.post'); don't works
 
         $queryObject = $this->wpQuery();
 
@@ -255,6 +260,7 @@ class WpciQuery
      * Right way to get current and correct query object
      * @return WP_Query
      * @throws \Exception
+     * @throws \Error
      */
     protected function wpQuery(): WP_Query
     {
