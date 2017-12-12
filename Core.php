@@ -106,9 +106,9 @@ final class Core
 
     /**
      * Run the App
-     * @param App $app
+     * @param callable $applicationThick
      */
-    public function handle(App $app)
+    public function run(callable $applicationThick)
     {
         try {
             /**
@@ -118,7 +118,7 @@ final class Core
                 ShutdownPromisePool::callAllPromises();
             });
 
-            $app->run();
+            $applicationThick();
 
             RouterStore::makeBinding();
 
