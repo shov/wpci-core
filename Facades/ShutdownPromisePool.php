@@ -20,6 +20,6 @@ class ShutdownPromisePool extends Facade
      */
     public static function getFacadeRoot()
     {
-        return App::get('promise-pool.shutdown');
+        return Core::get('promise-pool.shutdown');
     }
 }

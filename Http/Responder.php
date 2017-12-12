@@ -6,7 +6,7 @@ use Wpci\Core\Contracts\Response;
 use Wpci\Core\Exceptions\NotFoundHttpException;
 use Wpci\Core\Exceptions\UserAuthException;
 use Wpci\Core\Exceptions\ValidationException;
-use Wpci\Core\Facades\App;
+use Wpci\Core\Facades\Core;
 
 /**
  * Class Responder

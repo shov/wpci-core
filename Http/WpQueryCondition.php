@@ -4,7 +4,7 @@ namespace Wpci\Core\Http;
 
 use Wpci\Core\Contracts\Action;
 use Wpci\Core\Contracts\RouteCondition;
-use Wpci\Core\Facades\App;
+use Wpci\Core\Facades\Core;
 
 /**
  * Class WpQueryCondition
@@ -34,7 +34,7 @@ class WpQueryCondition implements RouteCondition
      */
     public function __construct(string $keyword, array $queryParams = [])
     {
-        $this->wpQuery = App::get("wp.query");
+        $this->wpQuery = Core::get("wp.query");
         $this->keywords = explode('|', $keyword);
         $this->queryParams = $queryParams;
     }

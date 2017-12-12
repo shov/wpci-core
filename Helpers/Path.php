@@ -127,7 +127,7 @@ class Path
     public function getCurrentUrl(): string
     {
         /** @var WP $wp */
-        $wp = \Wpci\Core\Facades\App::get('wp');
+        $wp = \Wpci\Core\Facades\Core::get('wp');
         return home_url(add_query_arg([], $wp->request));
     }
 

@@ -5,7 +5,7 @@ namespace Wpci\Core\DataSource;
 use stdClass;
 use WP_Post;
 use WP_Query;
-use Wpci\Core\Facades\App;
+use Wpci\Core\Facades\Core;
 use Wpci\Core\Facades\Path;
 use Wpci\Core\Helpers\DataManipulator;
 use Wpci\Core\Helpers\Decorator;
@@ -55,7 +55,7 @@ class WpciQuery
                 break;
 
             default:
-                $this->decoratedWpQuery = App::get('wp.query');
+                $this->decoratedWpQuery = Core::get('wp.query');
                 break;
         }
     }
@@ -103,7 +103,7 @@ class WpciQuery
         /**
          * @var WP_Post $post
          */
-        $post = App::get('wp.post');
+        $post = Core::get('wp.post');
 
         $queryObject = $this->wpQuery();
 
@@ -153,7 +153,7 @@ class WpciQuery
         /**
          * @var WP_Post $post
          */
-        $post = App::get('wp.post');
+        $post = Core::get('wp.post');
 
         $queryObject = $this->wpQuery();
 
@@ -259,7 +259,7 @@ class WpciQuery
     protected function wpQuery(): WP_Query
     {
         $hashDecoratedObject = spl_object_hash($this->decoratedWpQuery);
-        $globalObject = spl_object_hash(App::get('wp.query'));
+        $globalObject = spl_object_hash(Core::get('wp.query'));
 
         if ($hashDecoratedObject === $globalObject) {
             wp_reset_query();

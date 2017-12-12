@@ -25,6 +25,6 @@ class Assets extends Facade
      */
     public static function getFacadeRoot()
     {
-        return App::get(\Wpci\Core\Render\Assets::class);
+        return Core::get(\Wpci\Core\Render\Assets::class);
     }
 }

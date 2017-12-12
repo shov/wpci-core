@@ -6,19 +6,22 @@ use Symfony\Component\DependencyInjection\Container;
 use Wpci\Core\Helpers\Facade;
 
 /**
- * Class App
+ * Class Core
  * @package Wpci\Core\Facades
  *
  * @method static Container getContainer()
  * @method static null|mixed getEnvVar(string $var)
  */
-class App extends Facade
+class Core extends Facade
 {
+    protected static $core = null;
+
     /**
      * Get entity from container
      * @param $id
      * @return object
      * @throws \Exception
+     * @throws \Error
      */
     public static function get($id)
     {
@@ -28,10 +31,19 @@ class App extends Facade
     /**
      * Return the facade root object
      * @return mixed
+     * @throws \Error
      */
     public static function getFacadeRoot()
     {
-        global $app;
-        return $app;
+        if(is_null(static::$core)) {
+            throw new \Error("Have no Core root in Core facade!");
+        };
+
+        return static::$core;
+    }
+
+    public static function setFacadeRoot(\Wpci\Core\Core $core)
+    {
+        static::$core = $core;
     }
 }

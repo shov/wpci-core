@@ -2,7 +2,7 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\App;
+use Wpci\Core\Core;
 use Wpci\Core\Contracts\Action as ActionInterface;
 use Wpci\Core\Contracts\Response;
 

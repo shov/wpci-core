@@ -31,6 +31,6 @@ class Path extends Facade
      */
     public static function getFacadeRoot()
     {
-        return App::get(\Wpci\Core\Helpers\Path::class);
+        return Core::get(\Wpci\Core\Helpers\Path::class);
     }
 }

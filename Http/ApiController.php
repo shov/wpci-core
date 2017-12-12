@@ -3,7 +3,7 @@
 namespace Wpci\Core\Http;
 
 use Wpci\Core\Contracts\Response;
-use Wpci\Core\Facades\App;
+use Wpci\Core\Facades\Core;
 
 /**
  * Class ApiController
@@ -19,11 +19,11 @@ class ApiController extends Responder
     {
         $exceptionMarker = (2 != intval($status / 100));
 
-        if ($exceptionMarker && App::getEnvVar('testing')) {
+        if ($exceptionMarker && Core::getEnvVar('testing')) {
 
             $logData = [$content, $status];
             is_null($e) ?: $logData[] = $e->getTraceAsString();
-            App::get('Logger')->info($logData);
+            Core::get('Logger')->info($logData);
 
             if (!is_array($content)) {
                 $content = ['message' => $content];

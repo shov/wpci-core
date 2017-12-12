@@ -13,17 +13,17 @@ use Wpci\Core\Facades\ShutdownPromisePool;
 use Wpci\Core\Helpers\Path;
 use Wpci\Core\Helpers\PromisePool;
 use Wpci\Core\Helpers\ServiceRegistrator;
-use Wpci\Core\Http\WpFrontController;
 use Wpci\Core\Http\WpResponse;
 use Wpci\Core\Render\MustacheTemplate;
 use Wpci\Core\Render\View;
+use Wpci\Core\Contracts\App;
 use wpdb;
 
 /**
- * Class App
- * @package App
+ * Class Core
+ * @package Core
  */
-final class App
+final class Core
 {
     use ServiceRegistrator;
 
@@ -100,12 +100,15 @@ final class App
          * TODO: move to config
          */
         $this->env['testing'] = true;
+
+        \Wpci\Core\Facades\Core::setFacadeRoot($this);
     }
 
     /**
      * Run the App
+     * @param App $app
      */
-    public function run()
+    public function handle(App $app)
     {
         try {
             /**
@@ -114,6 +117,8 @@ final class App
             add_action('shutdown', function () {
                 ShutdownPromisePool::callAllPromises();
             });
+
+            $app->run();
 
             RouterStore::makeBinding();
 

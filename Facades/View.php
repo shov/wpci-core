@@ -22,6 +22,6 @@ class View extends Facade
      */
     public static function getFacadeRoot()
     {
-        return App::get(\Wpci\Core\Render\View::class);
+        return Core::get(\Wpci\Core\Render\View::class);
     }
 }
