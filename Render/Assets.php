@@ -25,13 +25,13 @@ class Assets
             if (is_null($path)) {
                 wp_enqueue_style($key);
             } else {
-                (empty($ver)) ? $ver = '' : $ver = '?' . $ver;
+                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
                 wp_register_style($key, $path, $deps, $ver);
                 wp_enqueue_style($key);
             }
         });
-        
+
         return $this;
     }
 
@@ -52,7 +52,7 @@ class Assets
             if (is_null($path)) {
                 wp_enqueue_script($key);
             } else {
-                (empty($ver)) ? $ver = '' : $ver = '?' . $ver;
+                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
                 wp_register_script($key, $path, $deps, $ver, true);
                 wp_enqueue_script($key);
@@ -79,7 +79,7 @@ class Assets
             if (is_null($path)) {
                 wp_enqueue_script($key);
             } else {
-                (empty($ver)) ? $ver = '' : $ver = '?' . $ver;
+                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
                 wp_register_script($key, $path, $deps, $ver, false);
                 wp_enqueue_script($key);
@@ -98,9 +98,9 @@ class Assets
     public function addVariableToScript(string $key, string $name, $value = null): Assets
     {
         if (empty($key) || empty($name)) {
-            throw new \InvalidArgumentException("Wrong name of script or variable to register!");    
+            throw new \InvalidArgumentException("Wrong name of script or variable to register!");
         }
-        
+
         add_action('wp_enqueue_scripts', function () use ($key, $name, $value) {
             wp_localize_script($key, $name, $value);
         });
