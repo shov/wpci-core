@@ -3,8 +3,8 @@
 namespace Wpci\Core\Render;
 
 /**
- * Class Assets, help to provide assets (js, css, images...) to wordpress theme output
- * @package Wpci\Core\Render
+ * Register assets (js, css, images...)
+ * in wordpress to output them on site pages in head/footer
  */
 class Assets
 {

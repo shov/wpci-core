@@ -2,25 +2,33 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Contracts\Action;
-use Wpci\Core\Contracts\RouteCondition;
-use Wpci\Core\Http\WpQueryCondition;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\RouteConditionInterface;
 
 /**
- * Class Route
- * @package Wpci\Core
+ * The storage who accumulates all given routes
+ * (means condition-action pairs) and then binds them all
+ * @see ActionInterface
+ * @see RouteConditionInterface
+ *
+ * Because role of the front controller takes wordpress,
+ * Core just give to us making
+ * the routes and then binds them all
  */
 class RouterStore
 {
+    /**
+     * @var array
+     */
     protected $routes = [];
 
     /**
      * Add route
-     * @param RouteCondition $condition
-     * @param Action $action
+     * @param RouteConditionInterface $condition
+     * @param ActionInterface $action
      * @param null|string $key
      */
-    public function add(RouteCondition $condition, Action $action, ?string $key = null)
+    public function add(RouteConditionInterface $condition, ActionInterface $action, ?string $key = null)
     {
         if (empty($key) || is_numeric($key)) {
             $this->routes[] = compact('condition', 'action');
@@ -51,7 +59,7 @@ class RouterStore
         $this->sortByConditionPriority();
 
         foreach ($this->routes as $route) {
-            /** @var RouteCondition $condition */
+            /** @var RouteConditionInterface $condition */
             $condition = $route['condition'];
 
             /** @var Action $action */

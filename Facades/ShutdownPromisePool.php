@@ -2,21 +2,22 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Helpers\Facade;
+use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Helpers\PromisePool;
 
 /**
- * Class ShutdownPromisePool
- * @package Wpci\Core\Facades
+ * The facade for the Instance (as service) of @see PromisePool
  *
  * @method static addPromise(callable $promise, ?int $priority = null)
  * @method static callAllPromises()
  */
-class ShutdownPromisePool extends Facade
+class ShutdownPromisePool extends AbstractFacade
 {
     /**
      * Return the facade root object
      * @return mixed
      * @throws \Exception
+     * @throws \Error
      */
     public static function getFacadeRoot()
     {

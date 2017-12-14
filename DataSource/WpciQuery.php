@@ -7,24 +7,23 @@ use WP_Post;
 use WP_Query;
 use Wpci\Core\Facades\Core;
 use Wpci\Core\Facades\Path;
-use Wpci\Core\Helpers\DataManipulator;
-use Wpci\Core\Helpers\Decorator;
+use Wpci\Core\Helpers\DataManipulatorTrait;
+use Wpci\Core\Helpers\DecoratorTrait;
 
 /**
- * Class WpciQuery, general data source uses as wordpress native query wrapper,
+ * General data source uses as wordpress native query wrapper,
  * provides smart and flexible way to collect necessary data in pretty useful shape
- * @package Wpci\Core\DataSource
  */
 class WpciQuery
 {
-    use Decorator;
-    use DataManipulator;
+    use DecoratorTrait;
+    use DataManipulatorTrait;
 
     const DEFAULT_CHANNEL = 'default';
 
     /**
      * Receive default data channel name
-     * @see DataManipulator::getDefaultChannel()
+     * @see DataManipulatorTrait::getDefaultChannel()
      * @return string
      */
     protected static function getDefaultChannel(): string
@@ -276,7 +275,7 @@ class WpciQuery
 
     /**
      * Decorate WP_Query object
-     * @see Decorator::getDecoratedObject()
+     * @see DecoratorTrait::getDecoratedObject()
      * @return WP_Query
      */
     protected function getDecoratedObject(): WP_Query

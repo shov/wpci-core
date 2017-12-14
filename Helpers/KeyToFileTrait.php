@@ -1,17 +1,19 @@
 <?php declare(strict_types=1);
 
 namespace Wpci\Core\Helpers;
+use Wpci\Core\Facades\ShutdownPromisePool;
 
 /**
- * Trait KeyToFile, use full, to search file by reference, or make temp file as well
- * @package Wpci\Core\Helpers
+ * Useful to search file by reference, or make temp file as well
  */
-trait KeyToFile
+trait KeyToFileTrait
 {
     /**
-     * @param string $basePath
-     * @param string $key
-     * @param callable $process
+     * @param string $basePath If $key isn't raw content, will be used to add the path
+     * @param string $key May be special reference like "@index" or file path like "/index.php" or just raw file content
+     * @param callable $process Will called with filename as argument, it file will be temp (with given content) or real one
+     * All temp files will be unlinked after getting the result
+     * TODO: maybe have sense give the responsibility for unlink to @see ShutdownPromisePool
      * @return mixed
      * @throws \Exception
      */

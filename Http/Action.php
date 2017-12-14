@@ -2,13 +2,11 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Core;
-use Wpci\Core\Contracts\Action as ActionInterface;
-use Wpci\Core\Contracts\Response;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\ResponseInterface;
 
 /**
- * Class Action, regular (simple) action
- * @package Wpci\Core\Http
+ * The Action
  */
 class Action implements ActionInterface
 {
@@ -25,7 +23,7 @@ class Action implements ActionInterface
     /**
      * @inheritdoc
      */
-    public function call(...$arguments): Response
+    public function call(...$arguments): ResponseInterface
     {
         $callback = $this->getCallbackFromReference($this->reference);
 
@@ -36,7 +34,7 @@ class Action implements ActionInterface
         }
 
         $responseImplements = class_implements($response);
-        if(false === $responseImplements || !in_array(Response::class, $responseImplements)) {
+        if(false === $responseImplements || !in_array(ResponseInterface::class, $responseImplements)) {
             $response = new RegularResponse($response);
         }
         return $response;

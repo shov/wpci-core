@@ -5,8 +5,7 @@ namespace Wpci\Core\Helpers;
 use WP;
 
 /**
- * Class Path, all important pathes in the application
- * @package Wpci\Core
+ * Provide methods to get all important pathes in the application
  */
 class Path
 {
@@ -123,6 +122,7 @@ class Path
      * Get current url with WP global query
      * @return string
      * @throws \Exception
+     * @throws \Error
      */
     public function getCurrentUrl(): string
     {

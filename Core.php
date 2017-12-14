@@ -12,11 +12,11 @@ use Wpci\Core\Facades\RouterStore;
 use Wpci\Core\Facades\ShutdownPromisePool;
 use Wpci\Core\Helpers\Path;
 use Wpci\Core\Helpers\PromisePool;
-use Wpci\Core\Helpers\ServiceRegistrator;
+use Wpci\Core\Helpers\ServiceRegistratorTrait;
 use Wpci\Core\Http\WpResponse;
 use Wpci\Core\Render\MustacheTemplate;
 use Wpci\Core\Render\View;
-use Wpci\Core\Contracts\App;
+use Wpci\Core\Contracts\AppInterface;
 use wpdb;
 
 /**
@@ -25,7 +25,7 @@ use wpdb;
  */
 final class Core
 {
-    use ServiceRegistrator;
+    use ServiceRegistratorTrait;
 
     /** @var ContainerBuilder */
     protected $container;

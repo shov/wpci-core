@@ -2,17 +2,16 @@
 
 namespace Wpci\Core\Render;
 
-use Wpci\Core\Contracts\Template;
+use Wpci\Core\Contracts\TemplateInterface;
 use Wpci\Core\Facades\Path;
-use Wpci\Core\Helpers\KeyToFile;
+use Wpci\Core\Helpers\KeyToFileTrait;
 
 /**
- * Class PhpTemplate
- * @package Wpci\Core\Render
+ * Pure php template engine decorator, the strategy to template with pure php
  */
-class PhpTemplate implements Template
+class PhpTemplate implements TemplateInterface
 {
-    use KeyToFile;
+    use KeyToFileTrait;
 
     const TPL_EXT = '.php';
 

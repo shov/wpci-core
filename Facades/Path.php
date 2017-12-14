@@ -2,11 +2,10 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Helpers\Facade;
+use Wpci\Core\Helpers\AbstractFacade;
 
 /**
- * Class Path
- * @package Wpci\Core\Facades
+ * The facade for @see \Wpci\Core\Helpers\Path
  *
  * @method static string getProjectRoot(string $tail = '')
  * @method static string getConfigPath(string $tail = '')
@@ -22,12 +21,13 @@ use Wpci\Core\Helpers\Facade;
  * @method static string getImagesUri(string $tail = '')
  * @method static string getFontsUri(string $tail = '')
  */
-class Path extends Facade
+class Path extends AbstractFacade
 {
     /**
      * Return the facade root object
      * @return mixed
      * @throws \Exception
+     * @throws \Error
      */
     public static function getFacadeRoot()
     {

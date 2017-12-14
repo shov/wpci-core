@@ -2,26 +2,25 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Contracts\Response;
+use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Exceptions\NotFoundHttpException;
 use Wpci\Core\Exceptions\UserAuthException;
 use Wpci\Core\Exceptions\ValidationException;
-use Wpci\Core\Facades\Core;
 
 /**
- * Class Responder
- * @package Wpci\Core\Http
+ * The base of all responding classes, contain useful methods to  wrap
+ * risky logic, make auto fail response, and other
  */
-abstract class Responder
+abstract class AbstractResponder
 {
     /**
      * @param \Throwable $e
      * @param null|string $message
      * @param int $status
-     * @return Response
+     * @return ResponseInterface
      * @throws \Exception
      */
-    protected function failWithException(\Throwable $e, ?string $message = null, int $status = RegularResponse::HTTP_FORBIDDEN): Response
+    protected function failWithException(\Throwable $e, ?string $message = null, int $status = RegularResponse::HTTP_FORBIDDEN): ResponseInterface
     {
         if (is_null($message)) {
             $message = $e->getMessage();
@@ -33,10 +32,10 @@ abstract class Responder
     /**
      * @param string $message
      * @param int $status
-     * @return Response
+     * @return ResponseInterface
      * @throws \Exception
      */
-    protected function failWithAuth(string $message = "Authorization required!", int $status = RegularResponse::HTTP_UNAUTHORIZED): Response
+    protected function failWithAuth(string $message = "Authorization required!", int $status = RegularResponse::HTTP_UNAUTHORIZED): ResponseInterface
     {
         return $this->makeResponse($status, $message);
     }
@@ -44,10 +43,10 @@ abstract class Responder
     /**
      * @param string $message
      * @param int $status
-     * @return Response
+     * @return ResponseInterface
      * @throws \Exception
      */
-    protected function failWithNotFound(string $message = "Not found", int $status = RegularResponse::HTTP_NOT_FOUND): Response
+    protected function failWithNotFound(string $message = "Not found", int $status = RegularResponse::HTTP_NOT_FOUND): ResponseInterface
     {
         return $this->makeResponse($status, $message);
     }
@@ -55,10 +54,10 @@ abstract class Responder
     /**
      * @param $content
      * @param int $status
-     * @return Response
+     * @return ResponseInterface
      * @throws \Exception
      */
-    protected function success($content, int $status = RegularResponse::HTTP_OK): Response
+    protected function success($content, int $status = RegularResponse::HTTP_OK): ResponseInterface
     {
         return $this->makeResponse($status, $content);
     }
@@ -68,10 +67,10 @@ abstract class Responder
      *
      * @param callable $process
      * @param mixed|null $successSpecResult
-     * @return Response
+     * @return ResponseInterface
      * @throws \Exception
      */
-    protected function wrap(callable $process, $successSpecResult = null): Response
+    protected function wrap(callable $process, $successSpecResult = null): ResponseInterface
     {
         try {
             $result = $process();
@@ -93,7 +92,7 @@ abstract class Responder
             $result = $successSpecResult;
         }
 
-        if ($result instanceof Response) {
+        if ($result instanceof ResponseInterface) {
             return $result;
         }
 
@@ -105,7 +104,7 @@ abstract class Responder
      * @param int $status
      * @param $content
      * @param null|\Throwable $e
-     * @return Response
+     * @return ResponseInterface
      */
-    abstract protected function makeResponse(int $status, $content, ?\Throwable $e = null): Response;
+    abstract protected function makeResponse(int $status, $content, ?\Throwable $e = null): ResponseInterface;
 }

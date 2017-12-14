@@ -4,7 +4,10 @@ namespace Wpci\Core\Contracts;
 
 use Wpci\Core\Core;
 
-interface App
+/**
+ * Implement it in your application
+ */
+interface AppInterface
 {
     /**
      * Inject core into application

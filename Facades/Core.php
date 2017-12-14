@@ -3,16 +3,15 @@
 namespace Wpci\Core\Facades;
 
 use Symfony\Component\DependencyInjection\Container;
-use Wpci\Core\Helpers\Facade;
+use Wpci\Core\Helpers\AbstractFacade;
 
 /**
- * Class Core
- * @package Wpci\Core\Facades
+ * The facade for @see \Wpci\Core\Core
  *
  * @method static Container getContainer()
  * @method static null|mixed getEnvVar(string $var)
  */
-class Core extends Facade
+class Core extends AbstractFacade
 {
     protected static $core = null;
 

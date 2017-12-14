@@ -3,15 +3,14 @@
 namespace Wpci\Core\Http;
 
 use WP_REST_Request;
-use Wpci\Core\Contracts\Action;
-use Wpci\Core\Contracts\RouteCondition;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\RouteConditionInterface;
 use Wpci\Core\Exceptions\RoutingException;
 
 /**
- * Class WpRestCondition
- * @package Wpci\Core\Http
+ * The condition for wordpress REST API calls
  */
-class WpRestCondition implements RouteCondition
+class WpRestCondition implements RouteConditionInterface
 {
     const HTTP_METHODS = [
         'GET' => 'GET',
@@ -148,7 +147,7 @@ class WpRestCondition implements RouteCondition
     /**
      * @inheritdoc
      */
-    public function bindWithAction(Action $action)
+    public function bindWithAction(ActionInterface $action)
     {
         add_action('rest_api_init', function () use ($action) {
             register_rest_route($this->urlPrefix, $this->url, [

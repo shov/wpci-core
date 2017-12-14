@@ -2,15 +2,14 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Contracts\Action;
-use Wpci\Core\Contracts\RouteCondition;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\RouteConditionInterface;
 use Wpci\Core\Facades\Core;
 
 /**
- * Class WpQueryCondition
- * @package Wpci\Core\Http
+ * The condition for wordpress site pages who always make the "query"
  */
-class WpQueryCondition implements RouteCondition
+class WpQueryCondition implements RouteConditionInterface
 {
     /**
      * Because only one action can be bound
@@ -42,7 +41,7 @@ class WpQueryCondition implements RouteCondition
     /**
      * @inheritdoc
      */
-    public function bindWithAction(Action $action)
+    public function bindWithAction(ActionInterface $action)
     {
         if (static::$wpQueryActionHasBound) return;
 

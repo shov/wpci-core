@@ -3,13 +3,20 @@
 namespace Wpci\Core\Helpers;
 
 /**
- * Class PromisePool
- * @package Wpci\Core\Helpers
+ * The pool of callbacks
  */
 class PromisePool
 {
+    /**
+     * @var array
+     */
     protected $pool = [];
 
+    /**
+     * Add callback to the pool
+     * @param callable $promise
+     * @param int|null $priority
+     */
     public function addPromise(callable $promise, ?int $priority = null)
     {
         $priority = $priority ?? 0;
@@ -17,6 +24,9 @@ class PromisePool
         $pool[] = compact('priority', 'promise');
     }
 
+    /**
+     * Call all callbacks ordered by priority
+     */
     public function callAllPromises()
     {
         $pool = $this->pool;

@@ -6,17 +6,16 @@ use Mustache_Engine;
 use Mustache_Exception_UnknownTemplateException;
 use Mustache_Loader;
 use Mustache_Loader_FilesystemLoader;
-use Wpci\Core\Contracts\Template;
+use Wpci\Core\Contracts\TemplateInterface;
 use Wpci\Core\Facades\Path;
-use Wpci\Core\Helpers\KeyToFile;
+use Wpci\Core\Helpers\KeyToFileTrait;
 
 /**
- * Class MustacheTemplate
- * @package Wpci\Core\Render
+ * Mustache template engine decorator, the strategy to template with Mustache
  */
-class MustacheTemplate implements Template
+class MustacheTemplate implements TemplateInterface
 {
-    use KeyToFile;
+    use KeyToFileTrait;
 
     const TPL_EXT = '.html';
 

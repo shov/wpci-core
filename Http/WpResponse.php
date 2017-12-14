@@ -3,13 +3,13 @@
 namespace Wpci\Core\Http;
 
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
+use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Facades\ShutdownPromisePool;
 
 /**
- * Class WpResponse
- * @package Wpci\Core\Http
+ * The response working correctly as regular wordpress page response
  */
-class WpResponse extends BaseResponse implements \Wpci\Core\Contracts\Response
+class WpResponse extends BaseResponse implements ResponseInterface
 {
     /**
      * Dump rendered page as temp file and return its name

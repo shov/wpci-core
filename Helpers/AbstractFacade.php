@@ -3,10 +3,9 @@
 namespace Wpci\Core\Helpers;
 
 /**
- * Class Facade
- * @package Wpci\Core\Helpers
+ * Is parent for all decorating facades
  */
-abstract class Facade
+abstract class AbstractFacade
 {
     /**
      * Redirect calls

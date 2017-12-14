@@ -3,10 +3,9 @@
 namespace Wpci\Core\Contracts;
 
 /**
- * Interface Response
- * @package Wpci\Core\Contracts
+ * Common interface for Responses which returns by @see Action::call
  */
-interface Response
+interface ResponseInterface
 {
     public function send();
 

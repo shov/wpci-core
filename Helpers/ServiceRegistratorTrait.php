@@ -6,14 +6,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Trait ServiceRegistrator
- * @package Wpci\Core\Helpers
+ * Toolkit to help to make registration services  in the container
+ * using as source all found classes in given directories
  *
  * required in implementation
  * @property ContainerBuilder $container
  * @property Path $path
  */
-trait ServiceRegistrator
+trait ServiceRegistratorTrait
 {
     /**
      * @var array

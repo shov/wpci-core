@@ -3,10 +3,9 @@
 namespace Wpci\Core\Contracts;
 
 /**
- * Interface Template
- * @package Wpci\Core\Contracts
+ * Common interface for template engines decorators
  */
-interface Template
+interface TemplateInterface
 {
     /**
      * Render the content with given data

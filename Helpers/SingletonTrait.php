@@ -3,10 +3,9 @@
 namespace Wpci\Core\Helpers;
 
 /**
- * Trait Singleton
- * @package Wpci\Core\Helpers
+ * Singleton
  */
-trait Singleton
+trait SingletonTrait
 {
     private static $_inst;
 

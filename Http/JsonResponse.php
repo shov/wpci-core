@@ -3,13 +3,13 @@
 namespace Wpci\Core\Http;
 
 use Symfony\Component\HttpFoundation\JsonResponse as BaseJsonResponse;
+use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Facades\ShutdownPromisePool;
 
 /**
- * Class JsonResponse
- * @package Wpci\Core\Http
+ * The response in JSON
  */
-class JsonResponse extends BaseJsonResponse implements \Wpci\Core\Contracts\Response
+class JsonResponse extends BaseJsonResponse implements ResponseInterface
 {
     public function send()
     {

@@ -2,26 +2,24 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Contracts\Response;
-use Wpci\Core\Helpers\Facade;
-use Wpci\Core\Http\RegularResponse;
+use Wpci\Core\Helpers\AbstractFacade;
 
 /**
- * Class Assets
- * @package Wpci\Core\Facades
+ * The facade for @see \Wpci\Core\Render\Assets
  *
  * @method static $this registerStyle(string $key, ?string $path = null, array $deps = [], ?string $ver = null)
  * @method static \Wpci\Core\Render\Assets registerFooterScript(string $key, ?string $path = null, array $deps = [], ?string $ver = null)
  * @method static \Wpci\Core\Render\Assets registerHeaderScript(string $key, ?string $path = null, array $deps = [], ?string $ver = null)
  * @method static \Wpci\Core\Render\Assets addVariableToScript(string $key, string $name, $value = null)
  */
-class Assets extends Facade
+class Assets extends AbstractFacade
 {
 
     /**
      * Return the facade root object
      * @return mixed
      * @throws \Exception
+     * @throws \Error
      */
     public static function getFacadeRoot()
     {

@@ -2,20 +2,19 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Contracts\Response;
+use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Facades\Core;
 
 /**
- * Class PagesController
- * @package Wpci\Core\Http
+ * Inherit it in your application when will build controller for wordpress site pages
  */
-class PagesController extends Responder
+class PagesController extends AbstractResponder
 {
     /**
      * {@inheritdoc}
      * @throws \Exception
      */
-    protected function makeResponse(int $status, $content, ?\Throwable $e = null): Response
+    protected function makeResponse(int $status, $content, ?\Throwable $e = null): ResponseInterface
     {
         $exceptionMarker = (2 != intval($status / 100));
 

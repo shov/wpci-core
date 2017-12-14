@@ -2,19 +2,23 @@
 
 namespace Wpci\Core\Http;
 
-use Wpci\Core\Contracts\Action;
-use Wpci\Core\Contracts\RouteCondition;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\RouteConditionInterface;
 
 /**
+ * The condition for wordpress ajax callbacks
  * TODO: Implement it
- * Class WpAjaxCondition
- * @package Wpci\Core\Http
  */
-class WpAjaxCondition implements RouteCondition
+class WpAjaxCondition implements RouteConditionInterface
 {
 
-    public function bindWithAction(Action $action)
+    /**
+     * {@inheritdoc}
+     * @throws \Exception
+     */
+    public function bindWithAction(ActionInterface $action)
     {
         // TODO: Implement bindWithAction() method.
+        throw new \Exception("Not implementded");
     }
 }

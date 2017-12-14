@@ -3,13 +3,12 @@
 namespace Wpci\Core\Helpers;
 
 /**
- * Trait Decorator
- * @package Wpci\Core\Helpers
+ * Trait DecoratorTrait
  *
- * Required on host
+ * Have to implemented:
  * @method getDecoratedObject()
  */
-trait Decorator
+trait DecoratorTrait
 {
     /**
      * @param $method

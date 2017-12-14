@@ -3,13 +3,12 @@
 namespace Wpci\Core\Helpers;
 
 /**
- * Trait DataManipulator, getting and incrementing the data in different ways
- * @package Wpci\Core\Helpers
+ * Getting and incrementing the data in different ways
  *
- * Have to implemented
+ * Have to implemented:
  * @method static getDefaultChannel()
  */
-trait DataManipulator
+trait DataManipulatorTrait
 {
     /** @var array $baseData */
     protected static $baseData = [];

@@ -2,24 +2,25 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Contracts\Action;
-use Wpci\Core\Contracts\RouteCondition;
-use Wpci\Core\Helpers\Facade;
+use Wpci\Core\Contracts\ActionInterface;
+use Wpci\Core\Contracts\RouteConditionInterface;
+use Wpci\Core\Helpers\AbstractFacade;
 
 /**
- * Class RouterStore
- * @package Wpci\Core\Facades
- * @method static add(RouteCondition $condition, Action $action, ?string $key = null)
+ * The facade for @see \Wpci\Core\Http\RouterStore
+ *
+ * @method static add(RouteConditionInterface $condition, ActionInterface $action, ?string $key = null)
  * @method static bool removeByKey(string $key)
  * @method static makeBinding()
  */
-class RouterStore extends Facade
+class RouterStore extends AbstractFacade
 {
 
     /**
      * Return the facade root object
      * @return mixed
      * @throws \Exception
+     * @throws \Error
      */
     public static function getFacadeRoot()
     {

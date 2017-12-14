@@ -3,17 +3,16 @@
 namespace Wpci\Core\Render;
 
 use Pug\Pug;
-use Wpci\Core\Contracts\Template;
+use Wpci\Core\Contracts\TemplateInterface;
 use Wpci\Core\Facades\Path;
-use Wpci\Core\Helpers\KeyToFile;
+use Wpci\Core\Helpers\KeyToFileTrait;
 
 /**
- * Class PugTemplate
- * @package Wpci\Core\Render
+ * Pug template engine decorator, the strategy to template with Pug
  */
-class PugTemplate implements Template
+class PugTemplate implements TemplateInterface
 {
-    use KeyToFile;
+    use KeyToFileTrait;
 
     const TPL_EXT = '.pug';
 

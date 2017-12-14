@@ -3,13 +3,13 @@
 namespace Wpci\Core\Http;
 
 use Symfony\Component\HttpFoundation\Response as BaseResponse;
+use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Facades\ShutdownPromisePool;
 
 /**
- * Class RegularResponse
- * @package Wpci\Core\Http
+ * The regular html/text response
  */
-class RegularResponse extends BaseResponse implements \Wpci\Core\Contracts\Response
+class RegularResponse extends BaseResponse implements ResponseInterface
 {
     public function send()
     {
