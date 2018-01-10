@@ -47,7 +47,7 @@ class Action implements ActionInterface
      */
     protected function getCallbackFromReference($reference): callable
     {
-        $reference = $this->reference;
+        $this->reference = $reference;
         if(is_callable($reference)) {
             if(!is_string($reference)) {
                 $callback = $reference;

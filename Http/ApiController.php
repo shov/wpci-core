@@ -18,7 +18,7 @@ class ApiController extends AbstractResponder
     {
         $exceptionMarker = (2 != intval($status / 100));
 
-        if ($exceptionMarker && Core::getEnvVar('testing')) {
+        if ($exceptionMarker && Core::getEnvVar('TESTING')) {
 
             $logData = [$content, $status];
             is_null($e) ?: $logData[] = $e->getTraceAsString();

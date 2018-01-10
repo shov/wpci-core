@@ -2,12 +2,14 @@
 
 namespace Wpci\Core;
 
+use Closure;
 use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\Dotenv\Dotenv;
 use Wpci\Core\Facades\RouterStore;
 use Wpci\Core\Facades\ShutdownPromisePool;
 use Wpci\Core\Helpers\Path;
@@ -16,7 +18,6 @@ use Wpci\Core\Helpers\ServiceRegistratorTrait;
 use Wpci\Core\Http\WpResponse;
 use Wpci\Core\Render\MustacheTemplate;
 use Wpci\Core\Render\View;
-use Wpci\Core\Contracts\AppInterface;
 use wpdb;
 
 /**
@@ -47,10 +48,13 @@ final class Core
     public function __construct(string $rootPath)
     {
         $this->container = new ContainerBuilder();
-
         $this->path = new Path($rootPath, __DIR__);
 
-        ini_set('error_log', $this->path->getProjectRoot('/error.log.wp.txt'));
+        (new Dotenv())->load($this->path->getProjectRoot('/.env'));
+
+        $errorLogFile = getenv('ERROR_LOG');
+        if (false === $errorLogFile) $errorLogFile = '/error.log.wp.txt';
+        ini_set('error_log', $this->path->getProjectRoot($errorLogFile));
 
         /**
          * Wordpress
@@ -74,7 +78,6 @@ final class Core
          */
         $this->exclude(Path::class);
 
-        $this->prepareArguments(WpFrontController::class, new Reference('service_container'));
         $this->prepareArguments(View::class,
             new Reference(MustacheTemplate::class),
             new Reference(WpResponse::class)
@@ -97,9 +100,8 @@ final class Core
 
         /**
          * Environment
-         * TODO: move to config
          */
-        $this->env['testing'] = true;
+        $this->env = getenv() || [];
 
         \Wpci\Core\Facades\Core::setFacadeRoot($this);
     }
@@ -151,21 +153,50 @@ final class Core
     }
 
     /**
-     * @return Logger|null
+     * @return Logger
      */
-    public function getLogger(): ?Logger
+    public function getLogger()
     {
         return $this->logger;
     }
 
     /**
      * Accessor to environment vars
-     * TODO: Implement env config/system
      * @param string $var
+     * @param $default
      * @return null|mixed
      */
-    public function getEnvVar(string $var)
+    public function getEnvVar(string $var, $default)
     {
-        return $this->env[$var] ?? null;
+        $value = $this->env[$var] ?? null;
+
+        if ($value === false) {
+            return $default instanceof Closure ? $default() : $default;
+        }
+
+        switch (strtolower($value)) {
+            case 'true':
+            case '(true)':
+                return true;
+            case 'false':
+            case '(false)':
+                return false;
+            case 'empty':
+            case '(empty)':
+                return '';
+            case 'null':
+            case '(null)':
+                return null;
+        }
+
+        if (
+            strlen($value) > 1
+            && (0 === strpos($value, '"'))
+            && (strlen($value) - 1 === strpos($value, '"'))
+        ) {
+            return substr($value, 1, -1);
+        }
+
+        return $value;
     }
 }

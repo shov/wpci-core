@@ -22,7 +22,7 @@ class PagesController extends AbstractResponder
             $content = (string)$content;
         }
 
-        if ($exceptionMarker && Core::getEnvVar('testing')) {
+        if ($exceptionMarker && Core::getEnvVar('TESTING')) {
 
             $logData = [$content, $status];
             is_null($e) ?: $logData[] = $e->getTraceAsString();

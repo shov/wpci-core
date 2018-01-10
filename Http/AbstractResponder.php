@@ -63,7 +63,7 @@ abstract class AbstractResponder
     }
 
     /**
-     * E.g. wrapping regular controller action into try...catch block, give the process as callback,
+     * E.g. wrapping regular controller action into try...catch block, take the process as callback,
      *
      * @param callable $process
      * @param mixed|null $successSpecResult

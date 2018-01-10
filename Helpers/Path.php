@@ -22,6 +22,7 @@ class Path
     /**
      * Path constructor.
      * @param string $root
+     * @param string $core
      * @throws \Exception
      */
     public function __construct(string $root, string $core)

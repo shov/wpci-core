@@ -32,7 +32,40 @@ class MustacheTemplate implements TemplateInterface
 
         $this->engine = new Mustache_Engine([
 
-            'loader' => new Mustache_Loader_FilesystemLoader('/', $options),
+            'loader' => new class(__DIR__, $options)
+
+                extends Mustache_Loader_FilesystemLoader
+                implements Mustache_Loader
+            {
+                protected $ext;
+
+                public function __construct(string $baseDir, array $options = array())
+                {
+                    parent::__construct($baseDir, $options);
+                    $this->ext = $options['extension'] ?? '.mustache';
+                }
+
+                protected function getFileName($name)
+                {
+                    $fileName = $name;
+
+                    if (substr($fileName, 0 - strlen($this->ext)) !== $this->ext) {
+                        $fileName .= $this->ext;
+                    }
+
+                    return $fileName;
+                }
+
+                protected function loadFile($name)
+                {
+                    $fileName = $this->getFileName($name);
+                    if (!file_exists($fileName)) {
+                        throw new Mustache_Exception_UnknownTemplateException($name);
+                    }
+
+                    return file_get_contents($fileName);
+                }
+            },
 
             'partials_loader' =>
                 new class(Path::getTplPath(), $options)

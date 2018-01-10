@@ -9,7 +9,7 @@ use Wpci\Core\Helpers\AbstractFacade;
  * The facade for @see \Wpci\Core\Core
  *
  * @method static Container getContainer()
- * @method static null|mixed getEnvVar(string $var)
+ * @method static null|mixed getEnvVar(string $var, $default)
  */
 class Core extends AbstractFacade
 {
