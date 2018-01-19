@@ -78,12 +78,19 @@ trait DataManipulatorTrait
                 $process($this->data);
             } else {
 
-                if (is_array($this->data[$subKey])) {
-                    foreach ($this->data[$subKey] as $key => $data) {
-                        $process($this->data[$subKey][$key]);
-                    }
-                } else {
-                    $process($this->data[$subKey]);
+                $wrongSubKey = new \InvalidArgumentException(
+                    sprintf("Wrong subKey given (%s), have no array value by this sub key", $subKey));;
+
+                if (!is_array($this->data[$subKey])) {
+                    throw $wrongSubKey;
+                }
+
+                array_map(function ($el) use ($wrongSubKey) {
+                    if(!is_array($el)) throw $wrongSubKey;
+                }, $this->data[$subKey]);
+
+                foreach ($this->data[$subKey] as $key => $data) {
+                    $process($this->data[$subKey][$key]);
                 }
             }
         }

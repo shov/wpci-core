@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Helpers;
+namespace Wpci\Core\Contracts;
 
 /**
  * Is parent for all decorating facades

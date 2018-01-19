@@ -2,14 +2,14 @@
 
 namespace Wpci\Core\Facades;
 
-use Symfony\Component\DependencyInjection\Container;
-use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Contracts\AbstractFacade;
+use Wpci\Core\Flow\ContainerManager;
 
 /**
  * The facade for @see \Wpci\Core\Core
  *
- * @method static Container getContainer()
- * @method static null|mixed getEnvVar(string $var, $default)
+ * @method static ContainerManager getContainerManager()
+ * @method static null|mixed env(string $var, $default = null)
  */
 class Core extends AbstractFacade
 {
@@ -24,7 +24,10 @@ class Core extends AbstractFacade
      */
     public static function get($id)
     {
-        return static::getFacadeRoot()->getContainer()->get($id);
+        return static::getFacadeRoot()
+            ->getContainerManager()
+            ->getContainer()
+            ->get($id);
     }
 
     /**

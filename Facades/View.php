@@ -3,7 +3,7 @@
 namespace Wpci\Core\Facades;
 
 use Wpci\Core\Contracts\ResponseInterface;
-use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Contracts\AbstractFacade;
 use Wpci\Core\Http\RegularResponse;
 
 /**

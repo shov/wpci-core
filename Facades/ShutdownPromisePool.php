@@ -2,13 +2,13 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Helpers\AbstractFacade;
-use Wpci\Core\Helpers\PromisePool;
+use Wpci\Core\Contracts\AbstractFacade;
+use Wpci\Core\Flow\PromisePool;
 
 /**
  * The facade for the Instance (as service) of @see PromisePool
  *
- * @method static addPromise(callable $promise, ?int $priority = null)
+ * @method static addAnonymousPromise(callable $promise, ?int $priority = null)
  * @method static callAllPromises()
  */
 class ShutdownPromisePool extends AbstractFacade

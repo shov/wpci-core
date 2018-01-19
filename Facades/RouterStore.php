@@ -4,7 +4,7 @@ namespace Wpci\Core\Facades;
 
 use Wpci\Core\Contracts\ActionInterface;
 use Wpci\Core\Contracts\RouteConditionInterface;
-use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Contracts\AbstractFacade;
 
 /**
  * The facade for @see \Wpci\Core\Http\RouterStore

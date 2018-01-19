@@ -4,6 +4,7 @@ namespace Wpci\Core\Render;
 
 use Wpci\Core\Contracts\ResponseInterface;
 use Wpci\Core\Contracts\TemplateInterface;
+use Wpci\Core\Facades\Core;
 use Wpci\Core\Http\RegularResponse;
 
 /**
@@ -19,11 +20,13 @@ class View
      * View constructor.
      * @param TemplateInterface $templateStrategy
      * @param null|ResponseInterface $responseStrategy
+     * @throws \Error
+     * @throws \Exception
      */
     public function __construct(TemplateInterface $templateStrategy, ?ResponseInterface $responseStrategy = null)
     {
         $this->templateStrategy = $templateStrategy;
-        $this->responseStrategy = $responseStrategy ?? new RegularResponse();
+        $this->responseStrategy = $responseStrategy ?? Core::get(RegularResponse::class);
     }
 
     /**
@@ -37,8 +40,8 @@ class View
     {
         $content = $this->templateStrategy->render($key, $data);
 
-        return $this->responseStrategy
-            ->setContent($content)
-            ->setStatusCode($status);
+        $this->responseStrategy->setContent($content);
+        $this->responseStrategy->setStatusCode($status);
+        return $this->responseStrategy;
     }
 }

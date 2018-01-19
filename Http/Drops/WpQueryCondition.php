@@ -1,10 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Http;
+namespace Wpci\Core\Http\Drops;
 
 use Wpci\Core\Contracts\ActionInterface;
 use Wpci\Core\Contracts\RouteConditionInterface;
 use Wpci\Core\Facades\Core;
+use Wpci\Core\Flow\PromiseManager;
+use Wpci\Core\Wordpress\WpProvider;
+use Wpci\Core\Wordpress\WpQuery;
 
 /**
  * The condition for wordpress site pages who always make the "query"
@@ -18,8 +21,14 @@ class WpQueryCondition implements RouteConditionInterface
      */
     protected static $wpQueryActionHasBound = false;
 
-    /** @var \WP_Query */
+    /** @var WpQuery */
     protected $wpQuery;
+
+    /** @var WpProvider */
+    protected $wpProvider;
+
+    /** @var PromiseManager */
+    protected $promiseManager;
 
     /** @var array */
     protected $keywords;
@@ -33,7 +42,10 @@ class WpQueryCondition implements RouteConditionInterface
      */
     public function __construct(string $keyword, array $queryParams = [])
     {
-        $this->wpQuery = Core::get("wp.query");
+        $this->wpProvider = Core::get(WpProvider::class);
+        $this->wpQuery = Core::get(WpQuery::class);
+        $this->promiseManager = Core::get(PromiseManager::class);
+
         $this->keywords = explode('|', $keyword);
         $this->queryParams = $queryParams;
     }
@@ -45,7 +57,7 @@ class WpQueryCondition implements RouteConditionInterface
     {
         if (static::$wpQueryActionHasBound) return;
 
-        add_action('template_redirect', function () use ($action) {
+        $this->promiseManager->addPromise('template_redirect', function () use ($action) {
             if (static::$wpQueryActionHasBound) return;
 
             $gotKeywords = $this->parseKeywords();
@@ -74,7 +86,7 @@ class WpQueryCondition implements RouteConditionInterface
             if ($haveToBind) {
                 static::$wpQueryActionHasBound = true;
 
-                add_action('template_include', function () use ($action) {
+                $this->promiseManager->addPromise('template_include', function () use ($action) {
                     return $action->call($this->wpQuery)->send();
                 });
             }
@@ -100,6 +112,7 @@ class WpQueryCondition implements RouteConditionInterface
     /**
      * Set array of keywords to condition comparation
      * @return array
+     * @throws \ErrorException
      */
     protected function parseKeywords(): array
     {
@@ -135,7 +148,7 @@ class WpQueryCondition implements RouteConditionInterface
         if ($wpq->is_post_type_archive) $keywords[] = 'post_type_archive';
         if (0 === count($keywords)) $keywords[] = 'index';
 
-        $frontPageId = get_option('page_on_front');
+        $frontPageId = $this->wpProvider->getOption('page_on_front');
         //ignore zero value as well
         if (!empty($wpq->query_vars['p']) && $frontPageId == $wpq->query_vars['p']) {
             $keywords[] = 'index';
