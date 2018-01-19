@@ -1,36 +1,54 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Helpers;
+namespace Wpci\Core\Flow;
 
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Toolkit to help to make registration services  in the container
  * using as source all found classes in given directories
- *
- * required in implementation
- * @property ContainerBuilder $container
- * @property Path $path
  */
-trait ServiceRegistratorTrait
+class ServiceRegistrator
 {
-    /**
-     * @var array
-     */
+    /** @var array */
     protected $serviceArguments = [];
 
+    /** @var array */
+    protected $excluded = [
+        ContainerManager::class,
+        self::class,
+    ];
+
+    /** @var string */
+    protected $rootDir;
+
+    /** @var string */
+    protected $baseNamespace;
+
+    /** @var ContainerBuilder */
+    protected $container;
+
     /**
-     * @var array
+     * ServiceRegistrator constructor.
+     * @param string $rootDir
+     * @param string $baseNamespace
+     * @param ContainerBuilder $container
      */
-    protected $excluded = [];
+    public function __construct(string $rootDir, string $baseNamespace, ContainerBuilder $container)
+    {
+        $this->rootDir = $rootDir;
+        $this->container = $container;
+        $this->baseNamespace = $baseNamespace;
+    }
 
     /**
      * Add arguments to entity before register it
      * @param string $id
      * @param Reference[] ...$arguments
      */
-    protected function prepareArguments(string $id, Reference ...$arguments)
+    public function prepareArguments(string $id, Reference ...$arguments)
     {
         if(!isset($this->serviceArguments[$id])) $this->serviceArguments[$id] = [];
         $this->serviceArguments[$id] = array_merge($this->serviceArguments[$id], $arguments);
@@ -40,19 +58,19 @@ trait ServiceRegistratorTrait
      * Count names of classes which should be excluded
      * @param string[] ...$ids
      */
-    protected function exclude(string ...$ids)
+    public function exclude(string ...$ids)
     {
         $this->excluded = array_merge($this->excluded, $ids);
     }
 
     /**
      * Register all entities (only classes) from directory
-     * @param string $dirInCore
+     * @param string $subDir
      * @throws \Exception
      */
-    protected function walkDirForServices(string $dirInCore) {
+    public function walkDirForServices(string $subDir) {
         $entities = [];
-        $entitiesPath = $this->path->getCorePath() . '/' . ($dirInCore);
+        $entitiesPath = $this->rootDir . '/' . ($subDir);
 
         $entitiesDir = new \DirectoryIterator($entitiesPath);
         foreach ($entitiesDir as $fileInfo) {
@@ -76,7 +94,7 @@ trait ServiceRegistratorTrait
         }
 
         foreach ($entities as $entity) {
-            $className = "Wpci\\Core\\" . $dirInCore . "\\" . $entity;
+            $className = $this->baseNamespace . $subDir . "\\" . $entity;
 
             if(in_array($className, $this->excluded)) {
                 continue;
@@ -90,7 +108,16 @@ trait ServiceRegistratorTrait
                 }
             }
 
-            $bound->setPublic(true);
+            $bound->setPublic(true)->setAutowired(true);
         }
+    }
+
+    /**
+     * Back the container instance
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
     }
 }

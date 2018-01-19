@@ -2,7 +2,7 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Contracts\AbstractFacade;
 
 /**
  * The facade for @see \Wpci\Core\Render\Assets

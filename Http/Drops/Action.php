@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Http;
+namespace Wpci\Core\Http\Drops;
 
 use Wpci\Core\Contracts\ActionInterface;
 use Wpci\Core\Contracts\ResponseInterface;
+use Wpci\Core\Http\RegularResponse;
 
 /**
  * The Action

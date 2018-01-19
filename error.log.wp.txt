@@ -1,0 +1,16 @@
+[10-Jan-2018 09:39:34 UTC] PHP Fatal error:  Uncaught Symfony\Component\Config\Exception\FileLocatorFileNotFoundException: The file "services.yaml" does not exist (in: /home/shov/Projects/Front-Dev/wpci-core/config). in /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/config/FileLocator.php:71
+Stack trace:
+#0 /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/dependency-injection/Loader/YamlFileLoader.php(114): Symfony\Component\Config\FileLocator->locate('services.yaml')
+#1 /home/shov/Projects/Front-Dev/wpci-core/Core.php(82): Symfony\Component\DependencyInjection\Loader\YamlFileLoader->load('services.yaml')
+#2 /home/shov/Projects/Front-Dev/wpci-core/Tests/TestCase.php(22): Wpci\Core\Core->__construct('/home/shov/Proj...')
+#3 /home/shov/Projects/Front-Dev/wpci-core/vendor/phpunit/phpunit/src/Framework/TestSuite.php(591): Wpci\Core\Tests\TestCase->__construct()
+#4 /home/shov/Projects/Front-Dev/wpci-core/vendor/phpunit/phpunit/src/Framework/TestSuite.php(882): PHPUnit\Framework\TestSuite::createTest(Object(ReflectionClass), 'display')
+#5 /home/ in /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/config/FileLocator.php on line 71
+[10-Jan-2018 09:39:41 UTC] PHP Fatal error:  Uncaught Symfony\Component\Config\Exception\FileLocatorFileNotFoundException: The file "services.yaml" does not exist (in: /home/shov/Projects/Front-Dev/wpci-core/config). in /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/config/FileLocator.php:71
+Stack trace:
+#0 /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/dependency-injection/Loader/YamlFileLoader.php(114): Symfony\Component\Config\FileLocator->locate('services.yaml')
+#1 /home/shov/Projects/Front-Dev/wpci-core/Core.php(82): Symfony\Component\DependencyInjection\Loader\YamlFileLoader->load('services.yaml')
+#2 /home/shov/Projects/Front-Dev/wpci-core/Tests/TestCase.php(22): Wpci\Core\Core->__construct('/home/shov/Proj...')
+#3 /home/shov/Projects/Front-Dev/wpci-core/vendor/phpunit/phpunit/src/Framework/TestSuite.php(591): Wpci\Core\Tests\TestCase->__construct()
+#4 /home/shov/Projects/Front-Dev/wpci-core/vendor/phpunit/phpunit/src/Framework/TestSuite.php(882): PHPUnit\Framework\TestSuite::createTest(Object(ReflectionClass), 'display')
+#5 /home/ in /home/shov/Projects/Front-Dev/wpci-core/vendor/symfony/config/FileLocator.php on line 71

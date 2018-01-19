@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Helpers;
+namespace Wpci\Core\Flow;
 
-use WP;
+use Wpci\Core\Facades\Core;
+use Wpci\Core\Wordpress\WP;
+use Wpci\Core\Wordpress\WpProvider;
 
 /**
  * Provide methods to get all important pathes in the application
@@ -19,14 +21,20 @@ class Path
      */
     protected $core;
 
+    /** @var WpProvider */
+    protected $wpProvider;
+
     /**
      * Path constructor.
      * @param string $root
      * @param string $core
      * @throws \Exception
+     * @throws \Error
      */
     public function __construct(string $root, string $core)
     {
+        $this->wpProvider = Core::get(WpProvider::class);
+
         if(empty($root) || !is_dir($root)) {
             throw new \Exception("Invalid root dir");
         }
@@ -128,24 +136,27 @@ class Path
     public function getCurrentUrl(): string
     {
         /** @var WP $wp */
-        $wp = \Wpci\Core\Facades\Core::get('wp');
-        return home_url(add_query_arg([], $wp->request));
+        $wp = Core::get(WP::class);
+        return $this->wpProvider->homeUrl(
+            $this->wpProvider->addQueryArg([], $wp->request));
     }
 
     /**
      * Get WP theme directory URI
      * @param string $tail
      * @return string
+     * @throws \ErrorException
      */
     public function getWpThemeUri(string $tail = ''): string
     {
-        return get_template_directory_uri() . $tail;
+        return $this->wpProvider->getTemplateDirectoryUri() . $tail;
     }
 
     /**
      * Get public css folder URI
      * @param string $tail
      * @return string
+     * @throws \ErrorException
      */
     public function getCssUri(string $tail = ''): string
     {
@@ -156,6 +167,7 @@ class Path
      * Get public js folder URI
      * @param string $tail
      * @return string
+     * @throws \ErrorException
      */
     public function getJsUri(string $tail = ''): string
     {
@@ -166,6 +178,7 @@ class Path
      * Get public images folder URI
      * @param string $tail
      * @return string
+     * @throws \ErrorException
      */
     public function getImagesUri(string $tail = ''): string
     {
@@ -176,6 +189,7 @@ class Path
      * Get public fonts folder URI
      * @param string $tail
      * @return string
+     * @throws \ErrorException
      */
     public function getFontsUri(string $tail = ''): string
     {

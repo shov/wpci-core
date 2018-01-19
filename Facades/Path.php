@@ -2,10 +2,10 @@
 
 namespace Wpci\Core\Facades;
 
-use Wpci\Core\Helpers\AbstractFacade;
+use Wpci\Core\Contracts\AbstractFacade;
 
 /**
- * The facade for @see \Wpci\Core\Helpers\Path
+ * The facade for @see \Wpci\Core\Flow\Path
  *
  * @method static string getProjectRoot(string $tail = '')
  * @method static string getConfigPath(string $tail = '')
@@ -31,6 +31,6 @@ class Path extends AbstractFacade
      */
     public static function getFacadeRoot()
     {
-        return Core::get(\Wpci\Core\Helpers\Path::class);
+        return Core::get(\Wpci\Core\Flow\Path::class);
     }
 }

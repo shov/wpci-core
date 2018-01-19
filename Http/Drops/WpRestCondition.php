@@ -1,11 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace Wpci\Core\Http;
+namespace Wpci\Core\Http\Drops;
 
 use WP_REST_Request;
 use Wpci\Core\Contracts\ActionInterface;
 use Wpci\Core\Contracts\RouteConditionInterface;
 use Wpci\Core\Exceptions\RoutingException;
+use Wpci\Core\Facades\Core;
+use Wpci\Core\Flow\PromiseManager;
+use Wpci\Core\Wordpress\WpProvider;
 
 /**
  * The condition for wordpress REST API calls
@@ -21,9 +24,13 @@ class WpRestCondition implements RouteConditionInterface
 
     const DEFAULT_PREFIX = 'common/v2';
 
-    /**
-     * @var string
-     */
+    /** @var WpProvider */
+    protected $wpProvider;
+
+    /** @var PromiseManager */
+    protected $promiseManager;
+
+    /** @var string */
     protected static $urlPrefixBracket = '';
 
     /**
@@ -135,9 +142,14 @@ class WpRestCondition implements RouteConditionInterface
      * @param string $url
      * @param array $args
      * @param string $method
+     * @throws \Error
+     * @throws \Exception
      */
     public function __construct(string $urlPrefix, string $url, array $args = [], string $method = 'GET')
     {
+        $this->wpProvider = Core::get(WpProvider::class);
+        $this->promiseManager = Core::get(PromiseManager::class);
+
         $this->urlPrefix = static::$urlPrefixBracket . $urlPrefix;
         $this->url = $url;
         $this->args = $args;
@@ -145,14 +157,14 @@ class WpRestCondition implements RouteConditionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function bindWithAction(ActionInterface $action)
     {
-        add_action('rest_api_init', function () use ($action) {
-            register_rest_route($this->urlPrefix, $this->url, [
+        $this->promiseManager->addPromise('rest_api_init', function () use ($action) {
+            $this->wpProvider->registerRestRoute($this->urlPrefix, $this->url, [
                 'methods' => $this->method,
-                'callback' => function (WP_REST_Request $request) use ($action) {
+                'callback' => function ($request) use ($action) {
                     $response = $action->call($request);
                     $response->send();
                 },

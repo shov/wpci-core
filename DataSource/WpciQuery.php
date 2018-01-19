@@ -9,6 +9,9 @@ use Wpci\Core\Facades\Core;
 use Wpci\Core\Facades\Path;
 use Wpci\Core\Helpers\DataManipulatorTrait;
 use Wpci\Core\Helpers\DecoratorTrait;
+use Wpci\Core\Wordpress\WpPost;
+use Wpci\Core\Wordpress\WpProvider;
+use Wpci\Core\Wordpress\WpQuery;
 
 /**
  * General data source uses as wordpress native query wrapper,
@@ -31,7 +34,10 @@ class WpciQuery
         return static::DEFAULT_CHANNEL;
     }
 
-    /** @var WP_Query */
+    /** @var WpProvider */
+    protected $wpProvider;
+
+    /** @var WpQuery */
     protected $decoratedWpQuery = null;
 
     /**
@@ -43,19 +49,21 @@ class WpciQuery
      */
     public function __construct($query = null, ?string $channel = null)
     {
+        $this->wpProvider = Core::get(WpProvider::class);
+
         $this->addVariables(static::getBaseDataByChannel($channel));
 
         switch(true) {
-            case ($query instanceof WP_Query):
+            case ($query instanceof WpQuery):
                 $this->decoratedWpQuery = $query;
                 break;
 
             case (!empty($query) && (is_string($query) || is_array($query))):
-                $this->decoratedWpQuery = new WP_Query($query);
+                $this->decoratedWpQuery = new WpQuery($query);
                 break;
 
             default:
-                $this->decoratedWpQuery = Core::get('wp.query');
+                $this->decoratedWpQuery = Core::get(WpQuery::class);
                 break;
         }
     }
@@ -63,28 +71,30 @@ class WpciQuery
     /**
      * Add wordpress environment to the data
      * @return WpciQuery
+     * @throws \ErrorException
      */
     public function addWpEnv()
     {
+        $wpp = $this->wpProvider;
         $data = [
-            'site-url' => get_bloginfo('url'),
-            'site-wpurl' => get_bloginfo('wpurl'),
-            'site-description' => get_bloginfo('description'),
-            'site-rss_url' => get_bloginfo('rss_url'),
-            'site-rss2_url' => get_bloginfo('rss2_url'),
-            'site-atom_url' => get_bloginfo('atom_url'),
-            'site-comments_atom_url' => get_bloginfo('comments_atom_url'),
-            'site-comments_rss2_url' => get_bloginfo('comments_rss2_url'),
-            'site-pingback_url' => get_bloginfo('pingback_url'),
-            'site-stylesheet_url' => get_bloginfo('stylesheet_url'),
-            'site-stylesheet_directory' => get_bloginfo('stylesheet_directory'),
-            'site-template_directory' => get_bloginfo('template_directory'),
-            'site-admin_email' => get_bloginfo('admin_email'),
-            'site-charset' => get_bloginfo('charset'),
-            'site-html_type' => get_bloginfo('html_type'),
-            'site-version' => get_bloginfo('version'),
-            'site-language' => get_bloginfo('language'),
-            'site-name' => get_bloginfo('name'),
+            'site-url' => $wpp->getBlogInfo('url'),
+            'site-wpurl' => $wpp->getBlogInfo('wpurl'),
+            'site-description' => $wpp->getBlogInfo('description'),
+            'site-rss_url' => $wpp->getBlogInfo('rss_url'),
+            'site-rss2_url' => $wpp->getBlogInfo('rss2_url'),
+            'site-atom_url' => $wpp->getBlogInfo('atom_url'),
+            'site-comments_atom_url' => $wpp->getBlogInfo('comments_atom_url'),
+            'site-comments_rss2_url' => $wpp->getBlogInfo('comments_rss2_url'),
+            'site-pingback_url' => $wpp->getBlogInfo('pingback_url'),
+            'site-stylesheet_url' => $wpp->getBlogInfo('stylesheet_url'),
+            'site-stylesheet_directory' => $wpp->getBlogInfo('stylesheet_directory'),
+            'site-template_directory' => $wpp->getBlogInfo('template_directory'),
+            'site-admin_email' => $wpp->getBlogInfo('admin_email'),
+            'site-charset' => $wpp->getBlogInfo('charset'),
+            'site-html_type' => $wpp->getBlogInfo('html_type'),
+            'site-version' => $wpp->getBlogInfo('version'),
+            'site-language' => $wpp->getBlogInfo('language'),
+            'site-name' => $wpp->getBlogInfo('name'),
         ];
 
         $this->mergeToTheData($data);
@@ -101,21 +111,18 @@ class WpciQuery
      */
     public function addPostData(?callable $anotherElse = null, bool $withoutWp = false)
     {
-        /**
-         * @var WP_Post $post
-         * TODO: resolve dependence
-         */
-        global $post; // = Core::get('wp.post'); don't works
+        /** @var WpPost $post global post */
+        $post = Core::get(WpPost::class);
 
         $queryObject = $this->wpQuery();
 
         $data = [];
         if ($queryObject->have_posts()) {
             $queryObject->the_post();
-            $data['title'] = get_the_title();
+            $data['title'] = $this->wpProvider->getTheTitle();
 
             ob_start();
-            the_content();
+            $this->wpProvider->theContent();
             $data['content'] = ob_get_clean();
 
             $postData['excerpt'] = $post->post_excerpt;
@@ -128,16 +135,16 @@ class WpciQuery
 
         if (!$withoutWp) {
             ob_start();
-            wp_head();
+            $this->wpProvider->wpHead();
             $data['wp-head'] = ob_get_clean();
 
             ob_start();
-            wp_footer();
+            $this->wpProvider->wpFooter();
             $data['wp-footer'] = ob_get_clean();
         }
 
         $queryObject->rewind_posts();
-        wp_reset_postdata();
+        $this->wpProvider->wpResetPostData();
 
         $this->mergeToTheData($data);
         return $this;
@@ -153,11 +160,8 @@ class WpciQuery
      */
     public function addPostLoopData(?callable $anotherElse = null, bool $withoutWp = false)
     {
-        /**
-         * @var WP_Post $post
-         * TODO: resolve dependence
-         */
-        global $post; // = Core::get('wp.post'); don't works
+        /** @var WpPost $post global post */
+        $post = Core::get(WpPost::class);
 
         $queryObject = $this->wpQuery();
 
@@ -165,10 +169,10 @@ class WpciQuery
         while ($queryObject->have_posts()) {
             $queryObject->the_post();
             $postData = [];
-            $postData['title'] = get_the_title();
+            $postData['title'] = $this->wpProvider->getTheTitle();
 
             ob_start();
-            the_content();
+            $this->wpProvider->theContent();
             $postData['content'] = ob_get_clean();
 
             $postData['excerpt'] = $post->post_excerpt;
@@ -188,16 +192,16 @@ class WpciQuery
 
         if (!$withoutWp) {
             ob_start();
-            wp_head();
+            $this->wpProvider->wpHead();
             $data['wp-head'] = ob_get_clean();
 
             ob_start();
-            wp_footer();
+            $this->wpProvider->wpFooter();
             $data['wp-footer'] = ob_get_clean();
         }
 
         $queryObject->rewind_posts();
-        wp_reset_postdata();
+        $this->wpProvider->wpResetPostData();
 
         $this->mergeToTheData($data);
         return $this;
@@ -206,20 +210,24 @@ class WpciQuery
     /**
      * Add menus to template
      * @return $this
+     * @throws \ErrorException
      */
     public function addMenu()
     {
-        $menuLocations = get_nav_menu_locations();
+        $menuLocations = $this->wpProvider
+            ->getNavMenuLocations();
+
         $data = [];
 
         foreach ($menuLocations as $menuLocation => $menuId) {
-            $menu = wp_get_nav_menu_items($menuId);
+            $menu = $this->wpProvider
+                ->wpGetNavMenuItems($menuId);
 
             foreach ($menu as $menuItem) {
                 $item = new stdClass();
 
                 /**
-                 * @var WP_Post $menuItem
+                 * @var WpPost $menuItem
                  */
                 $item->item = $menuItem->title;
                 $item->link = $menuItem->url;
@@ -247,27 +255,28 @@ class WpciQuery
     /**
      * Try to add homepage ACF data to result
      * @return $this
+     * @throws \ErrorException
      */
     public function addHomePageAcf()
     {
-        $homePageId = (int)get_option('page_on_front');
+        $homePageId = (int)$this->wpProvider->getOption('page_on_front');
         $this->addAcfFromPage($homePageId);
         return $this;
     }
 
     /**
      * Right way to get current and correct query object
-     * @return WP_Query
+     * @return WpQuery
      * @throws \Exception
      * @throws \Error
      */
-    protected function wpQuery(): WP_Query
+    protected function wpQuery(): WpQuery
     {
         $hashDecoratedObject = spl_object_hash($this->decoratedWpQuery);
-        $globalObject = spl_object_hash(Core::get('wp.query'));
+        $globalObject = spl_object_hash(Core::get(WpQuery::class));
 
         if ($hashDecoratedObject === $globalObject) {
-            wp_reset_query();
+            $this->wpProvider->wpResetQuery();
         }
 
         return $this->decoratedWpQuery;
@@ -276,9 +285,9 @@ class WpciQuery
     /**
      * Decorate WP_Query object
      * @see DecoratorTrait::getDecoratedObject()
-     * @return WP_Query
+     * @return WpQuery
      */
-    protected function getDecoratedObject(): WP_Query
+    protected function getDecoratedObject(): WpQuery
     {
         return $this->decoratedWpQuery;
     }
@@ -290,9 +299,13 @@ class WpciQuery
      */
     protected function getAcfFromPage(int $pageId): array
     {
-        if (!function_exists('get_fields')) return [];
+        $data = [];
+        try {
+            $data = $this->wpProvider->getFields($pageId);
+        } catch (\Throwable $e) {
+            ;
+        }
 
-        $data = get_fields($pageId);
         if (!is_array($data) || empty($data)) return [];
 
         return $data;

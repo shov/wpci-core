@@ -10,4 +10,6 @@ interface ResponseInterface
     public function send();
 
     public function setStatusCode(int $code, $text = null);
+
+    public function setContent($content);
 }

@@ -2,18 +2,39 @@
 
 namespace Wpci\Core\Render;
 
+use Wpci\Core\Flow\PromiseManager;
+use Wpci\Core\Wordpress\WpProvider;
+
 /**
  * Register assets (js, css, images...)
  * in wordpress to output them on site pages in head/footer
  */
 class Assets
 {
+    /** @var WpProvider */
+    protected $wpProvider;
+
+    /** @var PromiseManager */
+    protected $promiseManager;
+
+    /**
+     * DI
+     * @param WpProvider $wpProvider
+     * @param PromiseManager $promiseManager
+     */
+    public function __construct(WpProvider $wpProvider, PromiseManager $promiseManager)
+    {
+        $this->wpProvider = $wpProvider;
+        $this->promiseManager = $promiseManager;
+    }
+
     /**
      * @param string $key
      * @param null|string $path
      * @param array|null $deps
      * @param null|string $ver
      * @return Assets
+     * @throws \ErrorException
      */
     public function registerStyle(
         string $key,
@@ -21,16 +42,17 @@ class Assets
         array $deps = [],
         ?string $ver = null): Assets
     {
-        add_action('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
-            if (is_null($path)) {
-                wp_enqueue_style($key);
-            } else {
-                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
+        $this->promiseManager
+            ->addPromise('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
+                if (is_null($path)) {
+                    $this->wpProvider->wpEnqueueStyle($key);
+                } else {
+                    (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
-                wp_register_style($key, $path, $deps, $ver);
-                wp_enqueue_style($key);
-            }
-        });
+                    $this->wpProvider->wpRegisterStyle($key, $path, $deps, $ver);
+                    $this->wpProvider->wpEnqueueStyle($key);
+                }
+            });
 
         return $this;
     }
@@ -41,6 +63,7 @@ class Assets
      * @param array|null $deps
      * @param null|string $ver
      * @return Assets
+     * @throws \ErrorException
      */
     public function registerFooterScript(
         string $key,
@@ -48,16 +71,17 @@ class Assets
         array $deps = [],
         ?string $ver = null): Assets
     {
-        add_action('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
-            if (is_null($path)) {
-                wp_enqueue_script($key);
-            } else {
-                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
+        $this->promiseManager
+            ->addPromise('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
+                if (is_null($path)) {
+                    $this->wpProvider->wpEnqueueScript($key);
+                } else {
+                    (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
-                wp_register_script($key, $path, $deps, $ver, true);
-                wp_enqueue_script($key);
-            }
-        });
+                    $this->wpProvider->wpRegisterScript($key, $path, $deps, $ver, true);
+                    $this->wpProvider->wpEnqueueScript($key);
+                }
+            });
 
         return $this;
     }
@@ -68,6 +92,7 @@ class Assets
      * @param array|null $deps
      * @param null|string $ver
      * @return Assets
+     * @throws \ErrorException
      */
     public function registerHeaderScript(
         string $key,
@@ -75,16 +100,17 @@ class Assets
         array $deps = [],
         ?string $ver = null): Assets
     {
-        add_action('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
-            if (is_null($path)) {
-                wp_enqueue_script($key);
-            } else {
-                (empty($ver)) ? $ver = false : $ver = '?' . $ver;
+        $this->promiseManager
+            ->addPromise('wp_enqueue_scripts', function () use ($key, $path, $deps, $ver) {
+                if (is_null($path)) {
+                    $this->wpProvider->wpEnqueueScript($key);
+                } else {
+                    (empty($ver)) ? $ver = false : $ver = '?' . $ver;
 
-                wp_register_script($key, $path, $deps, $ver, false);
-                wp_enqueue_script($key);
-            }
-        });
+                    $this->wpProvider->wpRegisterScript($key, $path, $deps, $ver, false);
+                    $this->wpProvider->wpEnqueueScript($key);
+                }
+            });
 
         return $this;
     }
@@ -94,6 +120,7 @@ class Assets
      * @param string $name
      * @param null $value
      * @return Assets
+     * @throws \ErrorException
      */
     public function addVariableToScript(string $key, string $name, $value = null): Assets
     {
@@ -101,9 +128,10 @@ class Assets
             throw new \InvalidArgumentException("Wrong name of script or variable to register!");
         }
 
-        add_action('wp_enqueue_scripts', function () use ($key, $name, $value) {
-            wp_localize_script($key, $name, $value);
-        });
+        $this->promiseManager
+            ->addPromise('wp_enqueue_scripts', function () use ($key, $name, $value) {
+                $this->wpProvider->wpLocalizeScript($key, $name, $value);
+            });
 
         return $this;
     }

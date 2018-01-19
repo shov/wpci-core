@@ -4,6 +4,8 @@ namespace Wpci\Core\Http;
 
 use Wpci\Core\Contracts\ActionInterface;
 use Wpci\Core\Contracts\RouteConditionInterface;
+use Wpci\Core\Http\Drops\Action;
+use Wpci\Core\Http\Drops\WpQueryCondition;
 
 /**
  * The storage who accumulates all given routes
