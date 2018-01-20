@@ -105,7 +105,7 @@ final class Core
 
         $this->containerManager
             ->getContainer()
-            ->set(Path::class, $this->path);
+            ->instance(Path::class, $this->path);
     }
 
     /**
@@ -189,6 +189,7 @@ final class Core
         $sr->walkDirForServices('Render');
         $sr->walkDirForServices('Wordpress');
 
+        $container->singleton('router-store', \Wpci\Core\Http\RouterStore::class);
         $container->instance('promise-pool.shutdown', new PromisePool());
     }
 }

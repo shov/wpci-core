@@ -24,6 +24,6 @@ class RouterStore extends AbstractFacade
      */
     public static function getFacadeRoot()
     {
-        return Core::get(\Wpci\Core\Http\RouterStore::class);
+        return Core::get('router-store');
     }
 }
