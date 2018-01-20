@@ -2,7 +2,7 @@
 
 namespace Wpci\Core\Tests\Unit\Flow;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Illuminate\Container\Container;
 use Wpci\Core\Flow\ContainerManager;
 use Wpci\Core\Tests\TestCase;
 
@@ -22,7 +22,7 @@ class ContainerManagerTest extends TestCase
         $cm = $this->core->getContainerManager();
 
         $counter = 0;
-        $cm->initInstructions(function (ContainerBuilder $containerBuilder) use (&$counter){
+        $cm->initInstructions(function (Container $container) use (&$counter){
             $this->assertTrue(true);
             $counter++;
         });

@@ -2,7 +2,7 @@
 
 namespace Wpci\Core\Tests\Unit\Flow;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Illuminate\Container\Container;
 use Symfony\Component\Filesystem\Filesystem;
 use Wpci\Core\Flow\ServiceRegistrator;
 use Wpci\Core\Tests\TestCase;
@@ -35,7 +35,7 @@ class ServiceRegistratorTest extends TestCase
         $this->prepare();
         $baseNs = "Wpci\\Core\\Tests\\Unit\\Flow\\Tmp\\";
 
-        /** @var ContainerBuilder $container */
+        /** @var Container $container */
         $container = $this->core
             ->getContainerManager()
             ->getContainer();
@@ -55,7 +55,6 @@ class ServiceRegistratorTest extends TestCase
         $this->assertFalse($container->has($baseNs . 'Part\\Delta'));
         $this->assertFalse($container->has($baseNs . 'Part\\NoDelta'));
 
-        $container->compile();
         $this->assertSame('Alpha', $container->get($baseNs . 'Part\\Alpha')->foo());
     }
 

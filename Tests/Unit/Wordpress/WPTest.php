@@ -15,7 +15,6 @@ class WPTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->compileContainer();
     }
 
     /**

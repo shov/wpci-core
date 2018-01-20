@@ -2,11 +2,11 @@
 
 namespace Wpci\Core\Flow;
 
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Illuminate\Container\Container;
+
 
 /**
- * Manage IoC (Symfony container in a fact) creation, manipulation
+ * Manage IoC (Laravel container in a fact) creation, manipulation
  */
 class ContainerManager
 {
@@ -44,7 +44,7 @@ class ContainerManager
      */
     public function createContainer()
     {
-        $this->container = new ContainerBuilder();
+        $this->container = new Container();
 
         if(!is_null($this->initInstructions)) {
             call_user_func_array($this->initInstructions, [$this->container]);

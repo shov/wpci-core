@@ -2,13 +2,13 @@
 
 namespace Wpci\Core\Contracts;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Dotenv\Dotenv;
 use Wpci\Core\Core;
 use Wpci\Core\Facades\Path;
 
+/**
+ * Use it as the base for you application
+ */
 abstract class AbstractApp implements AppInterface
 {
     /** @var string */
@@ -92,13 +92,7 @@ abstract class AbstractApp implements AppInterface
 
     protected function setUpServices()
     {
-        /** @var ContainerBuilder $container */
-        $container = $this->core
-            ->getContainerManager()
-            ->getContainer();
-
-        $serviceConfigLoader = new YamlFileLoader($container, new FileLocator(Path::getConfigPath()));
-        $serviceConfigLoader->load('services.yaml');
+        //
     }
 
     /**

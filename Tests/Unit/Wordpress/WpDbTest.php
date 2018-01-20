@@ -4,7 +4,6 @@ namespace Wpci\Core\Tests\Unit;
 
 use Wpci\Core\Tests\TestCase;
 use Wpci\Core\Wordpress\WpDb;
-use Wpci\Core\Wordpress\WpProvider;
 
 /**
  * @see WpDb
@@ -14,7 +13,6 @@ class WpDbTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->compileContainer();
     }
 
     /**

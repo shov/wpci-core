@@ -2,9 +2,7 @@
 
 namespace Wpci\Core\Flow;
 
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
+use Illuminate\Container\Container;
 
 /**
  * Toolkit to help to make registration services  in the container
@@ -27,16 +25,16 @@ class ServiceRegistrator
     /** @var string */
     protected $baseNamespace;
 
-    /** @var ContainerBuilder */
+    /** @var Container */
     protected $container;
 
     /**
      * ServiceRegistrator constructor.
      * @param string $rootDir
      * @param string $baseNamespace
-     * @param ContainerBuilder $container
+     * @param Container $container
      */
-    public function __construct(string $rootDir, string $baseNamespace, ContainerBuilder $container)
+    public function __construct(string $rootDir, string $baseNamespace, Container $container)
     {
         $this->rootDir = $rootDir;
         $this->container = $container;
@@ -46,12 +44,12 @@ class ServiceRegistrator
     /**
      * Add arguments to entity before register it
      * @param string $id
-     * @param Reference[] ...$arguments
+     * @param array $resolvingReferences
      */
-    public function prepareArguments(string $id, Reference ...$arguments)
+    public function prepareArguments(string $id, array $resolvingReferences)
     {
         if(!isset($this->serviceArguments[$id])) $this->serviceArguments[$id] = [];
-        $this->serviceArguments[$id] = array_merge($this->serviceArguments[$id], $arguments);
+        $this->serviceArguments[$id] = array_merge($this->serviceArguments[$id], $resolvingReferences);
     }
 
     /**
@@ -100,15 +98,16 @@ class ServiceRegistrator
                 continue;
             }
 
-            $bound = $this->container->register($className);
+            $this->container->bind($className, $className);
 
             if(!empty($this->serviceArguments[$className])) {
-                foreach ($this->serviceArguments[$className] as $argument) {
-                    $bound = $bound->addArgument($argument);
+                foreach ($this->serviceArguments[$className] as $shouldResolve => $byReference) {
+                    $this->container
+                        ->when($className)
+                        ->needs($shouldResolve)
+                        ->give($byReference);
                 }
             }
-
-            $bound->setPublic(true)->setAutowired(true);
         }
     }
 

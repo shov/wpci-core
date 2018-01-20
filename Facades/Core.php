@@ -31,6 +31,21 @@ class Core extends AbstractFacade
     }
 
     /**
+     * Make entity by the container
+     * @param $id
+     * @param array $params
+     * @return object
+     * @throws \Error
+     */
+    public static function make($id, array $params = [])
+    {
+        return static::getFacadeRoot()
+            ->getContainerManager()
+            ->getContainer()
+            ->make($id, $params);
+    }
+
+    /**
      * Return the facade root object
      * @return mixed
      * @throws \Error

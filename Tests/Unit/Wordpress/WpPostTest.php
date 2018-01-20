@@ -4,7 +4,6 @@ namespace Wpci\Core\Tests\Unit;
 
 use Wpci\Core\Tests\TestCase;
 use Wpci\Core\Wordpress\WpPost;
-use Wpci\Core\Wordpress\WpQuery;
 
 /**
  * @see WpPost
@@ -14,7 +13,6 @@ class WpPostTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->compileContainer();
     }
 
     /**

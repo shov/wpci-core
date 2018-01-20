@@ -3,13 +3,10 @@
 namespace Wpci\Core;
 
 use Closure;
+use Illuminate\Container\Container;
 use Monolog\Logger;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\Dotenv\Dotenv;
+use Wpci\Core\Contracts\ResponseInterface;
+use Wpci\Core\Contracts\TemplateInterface;
 use Wpci\Core\Facades\RouterStore;
 use Wpci\Core\Facades\ShutdownPromisePool;
 use Wpci\Core\Flow\ContainerManager;
@@ -17,16 +14,11 @@ use Wpci\Core\Flow\PromiseManager;
 use Wpci\Core\Flow\ServiceRegistrator;
 use Wpci\Core\Flow\Path;
 use Wpci\Core\Flow\PromisePool;
-use Wpci\Core\Http\Drops\Action;
-use Wpci\Core\Http\Drops\WpQueryCondition;
 use Wpci\Core\Http\WpResponse;
-use Wpci\Core\Http\Drops\WpRestCondition;
 use Wpci\Core\Render\MustacheTemplate;
 use Wpci\Core\Render\View;
 use Wpci\Core\Facades\Core as CoreFacade;
-use Wpci\Core\Wordpress\WpPost;
 use Wpci\Core\Wordpress\WpProvider;
-use wpdb;
 
 /**
  * Class Core
@@ -54,7 +46,7 @@ final class Core
     {
         $this->containerManager = new ContainerManager();
 
-        $this->containerManager->initInstructions(function (ContainerBuilder $container) {
+        $this->containerManager->initInstructions(function (Container $container) {
             $this->initServiceContainer($container);
         });
 
@@ -78,10 +70,6 @@ final class Core
             $promiseManager->addPromise('shutdown', function () {
                 ShutdownPromisePool::callAllPromises();
             });
-
-            $this->getContainerManager()
-                ->getContainer()
-                ->compile();
 
             $applicationThick();
 
@@ -181,19 +169,18 @@ final class Core
      * @param ContainerBuilder $container
      * @throws \Exception
      */
-    protected function initServiceContainer(ContainerBuilder $container)
+    protected function initServiceContainer(Container $container)
     {
         $sr = new ServiceRegistrator($this->coreRoot, "Wpci\\Core\\", $container);
 
         $sr->exclude(Path::class);
 
         $sr->prepareArguments(View::class,
-            new Reference(MustacheTemplate::class),
-            new Reference(WpResponse::class)
+            [
+                TemplateInterface::class => MustacheTemplate::class,
+                ResponseInterface::class => WpResponse::class
+            ]
         );
-
-        $sr->exclude(WpProvider::class);
-        $container->register(WpProvider::class, WpProvider::class)->setPublic(true)->setAutowired(true);
 
         $sr->walkDirForServices('Flow');
         $sr->walkDirForServices('DataSource');
@@ -202,6 +189,6 @@ final class Core
         $sr->walkDirForServices('Render');
         $sr->walkDirForServices('Wordpress');
 
-        $sr->getContainer()->set('promise-pool.shutdown', new PromisePool());
+        $container->instance('promise-pool.shutdown', new PromisePool());
     }
 }

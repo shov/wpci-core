@@ -21,7 +21,6 @@ class ViewTest extends TestCase
     {
         //Arrange
         $this->mockingUp();
-        $this->compileContainer();
 
         /** @var View $view */
         $view = $this->coreGet(View::class);
@@ -71,8 +70,6 @@ class ViewTest extends TestCase
                 return $this;
             }
         });
-
-        $this->compileContainer();
 
         $view = new View($templateStrategyMock, null);
 
@@ -128,11 +125,7 @@ class ViewTest extends TestCase
             }
         };
 
-        $this->coreSetInstance('templateStrategyMock', $templateStrategyMock);
-        $this->coreSetInstance('responseInterfaceMock', $responseInterfaceMock);
-
-        $references = [new Reference('templateStrategyMock'), new Reference('responseInterfaceMock')];
-        $this->coreIoCPrepareArguments(View::class, ...$references);
+        $this->coreSetInstance(View::class, new View($templateStrategyMock, $responseInterfaceMock));
 
         return compact('templateStrategyMock', 'responseInterfaceMock');
     }
