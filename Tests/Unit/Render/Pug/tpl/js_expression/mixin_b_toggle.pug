@@ -1,0 +1,10 @@
+mixin b-toggle(o)
+    - var o = o || {}
+    .b-toggle(class=o.className data-validate-parent)
+        label.b-toggle__wrapper
+            input.b-toggle__input(class=o.inputClassName ||'' type=o.type checked=!!o.checked disabled=!!o.disabled name=o.name || '' data-validate-events="change")&attributes(o.attributes || {})
+            span.b-toggle__element
+            if o.text
+                span.b-toggle__text #{o.text}
++b-toggle()
++b-toggle({attributes: {'nnn': "zzz"}})

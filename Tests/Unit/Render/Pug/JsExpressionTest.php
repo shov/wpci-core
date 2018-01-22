@@ -36,6 +36,58 @@ class JsExpressionTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function positiveObjectDef()
+    {
+        //Arrange
+        $this->mocking();
+
+        $tplName = '@js_expression::empty_obj_def';
+        $tplPath = __DIR__ . '/tpl/js_expression/empty_obj_def.pug';
+        $htmlPath = __DIR__ . '/tpl/js_expression/empty_obj_def.html';
+
+        $this->assertTrue(is_readable($tplPath) && is_readable($htmlPath));
+        $expect = file_get_contents($htmlPath);
+
+        //Act
+        $response = \Wpci\Core\Facades\View::display($tplName, []);
+
+        //Assert
+        /** @var RegularResponse $response */
+        $this->assertTrue($response instanceof RegularResponse);
+
+        $content = $response->getContent();
+        $this->assertEqualsTrimmed($expect, $content);
+    }
+
+    /**
+     * @test
+     */
+    public function bToggle()
+    {
+        //Arrange
+        $this->mocking();
+
+        $tplName = '@js_expression::mixin_b_toggle';
+        $tplPath = __DIR__ . '/tpl/js_expression/mixin_b_toggle.pug';
+        $htmlPath = __DIR__ . '/tpl/js_expression/mixin_b_toggle.html';
+
+        $this->assertTrue(is_readable($tplPath) && is_readable($htmlPath));
+        $expect = file_get_contents($htmlPath);
+
+        //Act
+        $response = \Wpci\Core\Facades\View::display($tplName, []);
+
+        //Assert
+        /** @var RegularResponse $response */
+        $this->assertTrue($response instanceof RegularResponse);
+
+        $content = $response->getContent();
+        $this->assertEqualsTrimmed($expect, $content);
+    }
+
+    /**
      * Maybe a bug.. unknown filter ":php"
      */
     public function positiveMethodCall()
