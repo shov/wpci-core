@@ -1,0 +1,6 @@
+mixin test_field(o)
+    - var o = o || {}
+    h1= o.field || 'no data'
+
++test_field()
++test_field({field: "data"})
