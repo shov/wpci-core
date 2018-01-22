@@ -2,6 +2,8 @@
 
 namespace Wpci\Core\Render;
 
+use Phug\JsTransformerExtension;
+use Phug\Phug;
 use Pug\Pug;
 use Wpci\Core\Contracts\TemplateInterface;
 use Wpci\Core\Facades\Path;
@@ -27,7 +29,10 @@ class PugTemplate implements TemplateInterface
             'extension' => static::TPL_EXT,
         ];
 
-        $this->engine = new Pug();
+        //TODO: To use it you need installed and available to use npm
+        $this->engine = new Pug([
+            'pugjs' => true,
+        ]);
     }
 
     /**

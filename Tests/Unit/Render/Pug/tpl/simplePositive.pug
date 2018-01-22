@@ -1,0 +1,19 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    script(type='text/javascript').
+      if (foo) {
+         bar(1 + 5)
+      }
+  body
+    h1= pageTitle
+    #container.col
+      if youAreUsingJade
+        p You are amazing
+      else
+        p Get on it!
+      p.
+        Pug.php is PHP port Pug (JS)
+        the node template engine
+        (previously named Jade).
